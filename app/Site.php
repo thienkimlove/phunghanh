@@ -39,6 +39,20 @@ class Site
         return number_format($price, null, null, '.');
     }
 
+    public static function displayJson($ars)
+    {
+        $html = null;
+        if (is_array($ars)) {
+            foreach ($ars as $key => $ar) {
+                $html .= '&nbsp;&nbsp;<b>'.$key.'</b>&nbsp;&nbsp;'.self::displayJson($ar).'<br/>';
+            }
+        } else {
+            $html .= filter_var($ars, FILTER_VALIDATE_URL)? '<a href="'.$ars.'">Link</a>' : $ars;
+        }
+
+        return $html;
+    }
+
     public static function enoughProductForOrder($order)
     {
         foreach ($order->orderItems as $item) {

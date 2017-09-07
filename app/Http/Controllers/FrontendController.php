@@ -26,7 +26,9 @@ class FrontendController extends Controller
             if (($network = Network::find($networkId)) && $network->status) {
                 try {
                     $networkClick = NetworkClick::create([
-                        'log_click_url' => json_encode($request->all(), true),
+                        'log_click_url' => $request->fullUrl(),
+                        'camp_ip' => $request->ip(),
+                        'camp_time' => Carbon::now()->toDateTimeString(),
                         'network_id' => $networkId
                     ]);
 
@@ -94,14 +96,13 @@ class FrontendController extends Controller
                         $sign = $request->input('sign') ? $request->input('sign') : null;
 
                         $networkClick->update([
-                            'log_callback_url' => json_encode([
-                                'url' => $callbackUrl,
-                                'call_status' => $ok
-                            ]),
+                            'log_callback_url' => $request->fullUrl(),
                             'sign' => $sign,
                             'callback_ip' => $request->ip(),
+                            'callback_time' => Carbon::now()->toDateTimeString(),
                             'call_start_point_url' => $callbackUrl,
-                            'call_start_point_status' => ($ok) ? true: false
+                            'call_start_point_status' => ($ok) ? true: false,
+                            'callback_response' => $ok
                         ]);
 
 
@@ -137,7 +138,7 @@ class FrontendController extends Controller
 
         # call the callback
 
-        return redirect()->away(url('callback?uid='.$uid.'&payout=0.3&country=VN'));
+        return redirect()->away(url('callback?uid='.$uid.'&payout=0.3&country=VN&sign='.md5(time())));
     }
 
     public function exampleCallback(Request $request)

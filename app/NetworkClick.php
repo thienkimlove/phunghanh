@@ -14,7 +14,11 @@ class NetworkClick extends Model
         'callback_ip',
         'redirect_to_end_point_url',
         'call_start_point_url',
-        'call_start_point_status'
+        'call_start_point_status',
+        'camp_ip',
+        'camp_time',
+        'callback_time',
+        'callback_response'
     ];
 
     public function network()
