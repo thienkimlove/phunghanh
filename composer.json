@@ -11,6 +11,7 @@
         "doctrine/dbal": "^2.5",
         "intervention/image": "^2.3",
         "intervention/imagecache": "^2.3",
+        "jenssegers/agent": "^2.5",
         "laracasts/flash": "^2.0",
         "laravel/framework": "5.4.*",
         "laravel/socialite": "^3.0",

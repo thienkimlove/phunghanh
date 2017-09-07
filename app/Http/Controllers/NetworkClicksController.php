@@ -23,7 +23,7 @@ class NetworkClicksController extends AdminController
         $searchContent = '';
         $modelClass = $this->init();
 
-        $customUrl = 'admin/'.$this->model.'?init=1';
+        $customUrl = $this->model.'?init=1';
 
         $contents = $modelClass::latest('created_at');
 

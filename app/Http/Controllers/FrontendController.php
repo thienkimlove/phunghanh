@@ -31,8 +31,14 @@ class FrontendController extends Controller
                     ]);
 
                     $signUrl = (strpos($network->click_url, '?') === FALSE)? '?' : '&';
+                    $goAwayUrl = $network->click_url.$signUrl.'uid='.$networkClick->id;
+                    @file_put_contents(storage_path('logs/go_away_url.txt'), $goAwayUrl."\n", FILE_APPEND);
 
-                    return redirect()->away($network->click_url.$signUrl.'uid='.$networkClick->id);
+                    $networkClick->update([
+                        'redirect_to_end_point_url' => $goAwayUrl
+                    ]);
+
+                    return redirect()->away($goAwayUrl);
                 } catch (\Exception $e) {
                     $errorMsg = $e->getMessage();
                 }
@@ -53,49 +59,71 @@ class FrontendController extends Controller
     {
         $errorMsg = null;
         if ($request->input('uid')) {
-            $networkClickId = $request->input('uid');
-            if ($networkClick = NetworkClick::find($networkClickId)) {
-                try {
+            $networkClickId = (int) $request->input('uid');
+            $networkClick = NetworkClick::find($networkClickId);
+            if ($networkClick) {
 
-                    $network = Network::find($networkClick->network_id);
-                    # retrieve click params.
-                    $clickParams = json_decode($networkClick->log_click_url, true);
-                    $mapParams = explode(',', $network->map_params);
-                    # request
+                if (!$networkClick->log_callback_url) {
+                    try {
 
-                    # build callback Url
-                    $callbackUrl = $network->callback_url;
+                        $network = Network::find($networkClick->network_id);
+                        # retrieve click params.
+                        $clickParams = json_decode($networkClick->log_click_url, true);
+                        $mapParams = explode(',', $network->map_params);
+                        # request
 
-                    foreach ($mapParams as $couple) {
-                       $tempCouple = explode(':', $couple);
-                       $from_param = $tempCouple[0];
-                       $to_param = $tempCouple[1];
-                       $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                       if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
-                           $callbackUrl .= $to_param.'='.$clickParams[$from_param];
-                       }
+                        # build callback Url
+                        $callbackUrl = $network->callback_url;
+
+                        foreach ($mapParams as $couple) {
+                            $tempCouple = explode(':', trim($couple));
+                            $from_param = trim($tempCouple[0]);
+                            $to_param = trim($tempCouple[1]);
+                            if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
+                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                            }
+                        }
+                        if ($network->extend_params) {
+                            $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                            $callbackUrl .= trim($network->extend_params);
+                        }
+
+                        $ok = @file_get_contents($callbackUrl);
+
+                        $sign = $request->input('sign') ? $request->input('sign') : null;
+
+                        $networkClick->update([
+                            'log_callback_url' => json_encode([
+                                'url' => $callbackUrl,
+                                'call_status' => $ok
+                            ]),
+                            'sign' => $sign,
+                            'callback_ip' => $request->ip(),
+                            'call_start_point_url' => $callbackUrl,
+                            'call_start_point_status' => ($ok) ? true: false
+                        ]);
+
+
+                    } catch (\Exception $e) {
+                        $errorMsg = $e->getMessage();
                     }
-                    if ($network->extend_params) {
-                        $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                        $callbackUrl .= $network->extend_params;
-                    }
-                    $networkClick->update(['log_callback_url' => $callbackUrl]);
-
-                    return redirect()->away($callbackUrl);
-
-                } catch (\Exception $e) {
-                    $errorMsg = $e->getMessage();
+                } else {
+                    $errorMsg = 'Already has callback for uid='.$request->input('uid');
                 }
+
             } else {
                 $errorMsg = 'Failed to process with uid='.$request->input('uid');
             }
-        }  else {
+        } else {
             $errorMsg = 'Uid is required';
         }
 
         if ($errorMsg) {
             @file_put_contents(storage_path('logs/callback_errors.txt'), $errorMsg."\n", FILE_APPEND);
             return response()->json(['error' => $errorMsg]);
+        } else {
+            return response()->json(['status' => true]);
         }
     }
 

@@ -30,6 +30,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Allow IPs</th>
                                 <th>Click Url</th>
                                 <th>CallBack Url</th>
                                 <th>Map Params</th>
@@ -45,6 +46,7 @@
                                 <tr>
                                     <td>{{$content->id}}</td>
                                     <td>{{$content->name}}</td>
+                                    <td>{{$content->callback_allow_ip}}</td>
                                     <td>{{$content->click_url}}</td>
                                     <td>{{$content->callback_url}}</td>
 
@@ -65,7 +67,7 @@
                                     </td>
 
                                     <td>
-                                        {{url('callback?uid={uid}')}}
+                                        {{url('callback?uid={uid}&sign={sign}')}}
                                     </td>
 
                                     <td>{{$content->status ? 'Active' : 'Inactive'}}</td>

@@ -28,6 +28,7 @@ class Network extends Model
         'callback_url',
         'map_params',
         'extend_params',
-        'status'
+        'status',
+        'callback_allow_ip'
     ];
 }

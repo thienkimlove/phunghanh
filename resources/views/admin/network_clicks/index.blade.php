@@ -21,8 +21,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>Network</th>
-                                <th>Click Data</th>
-                                <th>CallBack Url</th>
+                                <th>Log StartPoint</th>
+                                <th>Redirect EndPoint Url</th>
+                                <th>EndPoint Sign</th>
+                                <th>EndPoint IP</th>
+                                <th>CallBack StartPoint Url</th>
+                                <th>CallBack StartPoint Status</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -31,7 +35,11 @@
                                     <td>{{$content->id}}</td>
                                     <td>{{$content->network->name}}</td>
                                     <td>{{$content->log_click_url}}</td>
-                                    <td>{{$content->log_callback_url}}</td>
+                                    <td>{{$content->redirect_to_end_point_url}}</td>
+                                    <td>{{$content->sign}}</td>
+                                    <td>{{$content->callback_ip}}</td>
+                                    <td>{{$content->call_start_point_url}}</td>
+                                    <td>{{ ($content->call_start_point_status) ? 'Valid' : 'Invalid' }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
