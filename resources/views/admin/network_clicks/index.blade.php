@@ -5,7 +5,7 @@
         .qbreak {
             word-wrap: break-word;
             display: inline-block;
-            width: 100%;
+            width: 300px;
         }
     </style>
     <div class="row">
@@ -40,7 +40,7 @@
                                     <td width="10%">{{$content->network->name}}</td>
                                     <td width="15%">
                                         <p class="qbreak">
-                                            Link : {{$content->log_click_url}}<br/>
+                                            Link : {!! \App\Site::displayJson($content->log_click_url) !!}<br/>
                                             Time : {{$content->camp_time}}<br/>
                                             IP : {{$content->camp_ip}}<br/>
                                         </p>
@@ -51,13 +51,13 @@
                                     </td>
                                     <td width="20%">
                                         <p class="qbreak">
-                                            Link : {{$content->log_callback_url}}<br/>
+                                            Link : {!! \App\Site::displayJson($content->log_callback_url) !!}<br/>
                                             Time : {{$content->callback_time}}<br/>
                                             IP : {{$content->callback_ip}}<br/>
                                         </p>
                                     </td>
                                     <td width="15%">
-                                        <p class="qbreak">{{$content->call_start_point_url}}</p>
+                                        <p class="qbreak">{!! \App\Site::displayJson($content->call_start_point_url) !!}</p>
                                     </td>
                                     <td width="15%">
                                         <p class="qbreak"> {{$content->callback_response}}</p>

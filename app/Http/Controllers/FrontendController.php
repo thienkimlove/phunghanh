@@ -9,6 +9,7 @@ use App\NetworkClick;
 use App\Product;
 use Carbon\Carbon;
 use DB;
+use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -70,7 +71,10 @@ class FrontendController extends Controller
 
                         $network = Network::find($networkClick->network_id);
                         # retrieve click params.
-                        $clickParams = json_decode($networkClick->log_click_url, true);
+                        $clickParams = parse_query($networkClick->log_click_url);
+
+                        $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
+                        parse_str($query_str, $clickParams);
                         $mapParams = explode(',', $network->map_params);
                         # request
 
