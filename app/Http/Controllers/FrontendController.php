@@ -68,47 +68,55 @@ class FrontendController extends Controller
 
                 if (!$networkClick->log_callback_url) {
                     try {
-
                         $network = Network::find($networkClick->network_id);
-                        # retrieve click params.
-                        $clickParams = parse_query($networkClick->log_click_url);
+                        $networkAllowIps = [];
+                        $tempIps = explode(',', $network->callback_allow_ip);
+                        foreach ($tempIps as $tempIp) {
+                            $networkAllowIps[] = trim($tempIp);
+                        }
+                        if ($networkAllowIps && (in_array($request->ip(), $networkAllowIps))) {
+                            # retrieve click params.
+                            $clickParams = parse_query($networkClick->log_click_url);
 
-                        $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
-                        parse_str($query_str, $clickParams);
-                        $mapParams = explode(',', $network->map_params);
-                        # request
+                            $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
+                            parse_str($query_str, $clickParams);
+                            $mapParams = explode(',', $network->map_params);
+                            # request
 
-                        # build callback Url
-                        $callbackUrl = $network->callback_url;
+                            # build callback Url
+                            $callbackUrl = $network->callback_url;
 
-                        foreach ($mapParams as $couple) {
-                            $tempCouple = explode(':', trim($couple));
-                            $from_param = trim($tempCouple[0]);
-                            $to_param = trim($tempCouple[1]);
-                            if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
-                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                                $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                            foreach ($mapParams as $couple) {
+                                $tempCouple = explode(':', trim($couple));
+                                $from_param = trim($tempCouple[0]);
+                                $to_param = trim($tempCouple[1]);
+                                if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
+                                    $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                    $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                                }
                             }
+                            if ($network->extend_params) {
+                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                $callbackUrl .= trim($network->extend_params);
+                            }
+
+                            $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
+
+
+                            $sign = $request->input('sign') ? $request->input('sign') : null;
+
+                            $networkClick->update([
+                                'log_callback_url' => $request->fullUrl(),
+                                'sign' => $sign,
+                                'callback_ip' => $request->ip(),
+                                'callback_time' => Carbon::now()->toDateTimeString(),
+                                'call_start_point_url' => $callbackUrl,
+                                'call_start_point_status' => ($ok) ? true: false,
+                                'callback_response' => $ok
+                            ]);
+                        } else {
+                            $errorMsg = 'Not match allow Ip! Not call callback url!'. 'Allow ip list='.$network->callback_allow_ip. 'but ip access='.$request->ip();
                         }
-                        if ($network->extend_params) {
-                            $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                            $callbackUrl .= trim($network->extend_params);
-                        }
-
-                        $ok = @file_get_contents($callbackUrl);
-
-                        $sign = $request->input('sign') ? $request->input('sign') : null;
-
-                        $networkClick->update([
-                            'log_callback_url' => $request->fullUrl(),
-                            'sign' => $sign,
-                            'callback_ip' => $request->ip(),
-                            'callback_time' => Carbon::now()->toDateTimeString(),
-                            'call_start_point_url' => $callbackUrl,
-                            'call_start_point_status' => ($ok) ? true: false,
-                            'callback_response' => $ok
-                        ]);
-
 
                     } catch (\Exception $e) {
                         $errorMsg = $e->getMessage();
@@ -140,9 +148,11 @@ class FrontendController extends Controller
 
         # process with user here.
 
-        # call the callback
+        # call the callback when user get conversion.
 
-        return redirect()->away(url('callback?uid='.$uid.'&payout=0.3&country=VN&sign='.md5(time())));
+        $ok = @file_get_contents(url('callback?uid='.$uid.'&payout=0.3&country=VN&sign='.md5(time())));
+
+        return response()->json(['msg' => $ok]);
     }
 
     public function exampleCallback(Request $request)

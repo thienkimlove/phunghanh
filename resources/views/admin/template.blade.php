@@ -58,46 +58,17 @@
                     </li>
 
                     <li>
-                        <a><i class="fa fa-files-o fa-fw"></i>Users<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-
-                            <li>
-                                <a href="{{url('admin', 'users')}}">List</a>
-                            </li>
-
-                            <li>
-                                <a href="{{url('admin/users/create')}}">Create</a>
-                            </li>
-                        </ul>
+                        <a href="{{url('admin', 'users')}}"><i class="fa fa-files-o fa-fw"></i>Danh sách thành viên</a>
                     </li>
 
 
                     <li>
-                        <a><i class="fa fa-folder-o fa-fw"></i>Networks<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-
-                            <li>
-                                <a href="{{url('admin', 'networks')}}">List</a>
-                            </li>
-
-                            <li>
-                                <a href="{{url('admin/networks/create')}}">Create</a>
-                            </li>
-                        </ul>
+                        <a href="{{url('admin', 'networks')}}"><i class="fa fa-folder-o fa-fw"></i>Danh sách kết nối</a>
                     </li>
 
                     <li>
-                        <a><i class="fa fa-folder-o fa-fw"></i>NetworkClicks <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-
-                            <li>
-                                <a href="{{url('admin', 'network_clicks')}}">List</a>
-                            </li>
-
-                        </ul>
+                        <a href="{{url('admin', 'network_clicks')}}"><i class="fa fa-file-movie-o fa-fw"></i>Thống kê</a>
                     </li>
-
-
 
                 </ul>
             </div>

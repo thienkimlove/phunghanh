@@ -67,7 +67,30 @@
                                     </td>
 
                                     <td>
-                                        {{url('callback?uid={uid}&sign={sign}')}}
+
+                                      <a document-id="document{{$content->id}}" class="document-button">Toggle Document</a><br/>
+
+                                      <p id="document{{$content->id}}" style="display: none">
+                                          Thông tin kết nối : <br>
+                                          1. Khi có traffic bên mình sẽ chuyển người dùng sang đường link : {{$content->click_url}}&uid=xxxxxx<br/>
+
+                                          Trong đó tham số <b>uid</b> là tham số hệ thống bên mình tự sinh cho mỗi lần click.<br/>
+
+                                          2. Khi có conversion success, bên bạn gọi đường link sau với method "GET" : <br/>
+
+                                          {{url('callback?uid={uid}&sign={sign}')}}<br/>
+
+                                          Trong đó :
+                                          - Tham số uid là tham số mình truyền sang với lần click đó (đã mô tả ở mục 1).<br/>
+                                          - Tham số sign là tham số do bên bạn tự sinh unique với mỗi lần conversion success (Dùng cho mục đích đối xoát sản lượng giửa 2 bên sau này)<br/>
+                                          3. Ví dụ :  <br/>
+
+                                          - User A truy cập vào đường link dịch vụ bên mình , bên mình sẽ chuyển hướng user A sang đường link {{$content->click_url}}&uid=12345<br/>
+                                          - Khi User A đăng ký sử dụng thành công bên bạn, bên bạn gọi tới URL :  {{url('callback?uid=12345&sign=Z123A')}}<br/>
+
+                                          Trong đó "Z123A" là mã tự sinh (unique) của bên bạn cho lần đăng ký thành công của user A.
+
+                                      </p>
                                     </td>
 
                                     <td>{{$content->status ? 'Active' : 'Inactive'}}</td>
@@ -113,6 +136,11 @@
             });
             $('.edit-content').click(function(){
                 window.location.href = window.baseUrl + '/admin/'+$(this).attr('content-attr')+'/' + $(this).attr('id-attr') + '/edit';
+            });
+
+            $('a.document-button').click(function(){
+                var document_id = $(this).attr('document-id');
+                $('p#' + document_id).toggle();
             });
         });
     </script>
