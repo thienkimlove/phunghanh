@@ -41,7 +41,7 @@ class NetworkClicksController extends AdminController
 
         $networks = Network::pluck('name', 'id')->all();
 
-        $contents = $modelClass::latest('created_at')
+        $contents = $modelClass::orderBy('network_clicks.id', 'desc')
             ->whereBetween('network_clicks.created_at', [$start, $end]);
 
         if ($request->has('network_id')) {
