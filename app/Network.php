@@ -29,6 +29,7 @@ class Network extends Model
         'map_params',
         'extend_params',
         'status',
-        'callback_allow_ip'
+        'callback_allow_ip',
+        'is_sms_callback'
     ];
 }

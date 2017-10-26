@@ -26,11 +26,15 @@ class FrontendController extends Controller
             $networkId = $request->input('network_id');
             if (($network = Network::find($networkId)) && $network->status) {
                 try {
+
+
                     $networkClick = NetworkClick::create([
                         'log_click_url' => $request->fullUrl(),
                         'camp_ip' => $request->ip(),
                         'camp_time' => Carbon::now()->toDateTimeString(),
-                        'network_id' => $networkId
+                        'network_id' => $networkId,
+                        'origin' => $request->server('HTTP_REFERER'),
+                        'time' => Carbon::now()->timestamp
                     ]);
 
                     $signUrl = (strpos($network->click_url, '?') === FALSE)? '?' : '&';
@@ -159,6 +163,115 @@ class FrontendController extends Controller
     {
         $msg = json_encode($request->all(), true);
         return response()->json(['msg' => $msg]);
+    }
+
+    public function source($uid)
+    {
+
+        try {
+            $click = NetworkClick::findOrFail($uid);
+
+            return response()->json([
+                'uid' => $uid,
+                'source' => $click->origin
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
+    }
+
+    //api for sending message base on SMS.
+
+    public function smsCallback(Request $request)
+    {
+        $errorMsg = null;
+        if ($request->input('network_id')) {
+            $networkId = (int) $request->input('network_id');
+            $now = Carbon::now()->toDateTimeString();
+
+            $networkClickTrigger = NetworkClick::where('network_id', $networkId)
+                ->whereNull('log_callback_url')
+                ->where('created_at', '<', $now)
+                ->orderBy('created_at', 'desc')
+                ->limit(1)
+                ->get();
+
+            $networkClick = null;
+
+            if ($networkClickTrigger->count() > 0) {
+                $networkClick = $networkClickTrigger->first();
+            }
+
+            if ($networkClick) {
+                try {
+                    $network = Network::find($networkClick->network_id);
+                    $networkAllowIps = [];
+                    $tempIps = explode(',', $network->callback_allow_ip);
+                    foreach ($tempIps as $tempIp) {
+                        $networkAllowIps[] = trim($tempIp);
+                    }
+                    if ($networkAllowIps && (in_array($request->ip(), $networkAllowIps))) {
+                        # retrieve click params.
+                        $clickParams = parse_query($networkClick->log_click_url);
+
+                        $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
+                        parse_str($query_str, $clickParams);
+                        $mapParams = explode(',', $network->map_params);
+                        # request
+
+                        # build callback Url
+                        $callbackUrl = $network->callback_url;
+
+                        foreach ($mapParams as $couple) {
+                            $tempCouple = explode(':', trim($couple));
+                            $from_param = trim($tempCouple[0]);
+                            $to_param = trim($tempCouple[1]);
+                            if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
+                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                            }
+                        }
+                        if ($network->extend_params) {
+                            $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                            $callbackUrl .= trim($network->extend_params);
+                        }
+
+                        $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
+
+                        $sign = $request->input('sign') ? $request->input('sign') : null;
+
+                        $networkClick->update([
+                            'log_callback_url' => $request->fullUrl(),
+                            'sign' => $sign,
+                            'callback_ip' => $request->ip(),
+                            'callback_time' => Carbon::now()->toDateTimeString(),
+                            'call_start_point_url' => $callbackUrl,
+                            'call_start_point_status' => ($ok) ? true: false,
+                            'callback_response' => $ok
+                        ]);
+                    } else {
+                        $errorMsg = 'Not match allow Ip! Not call callback url!'. 'Allow ip list='.$network->callback_allow_ip. 'but ip access='.$request->ip();
+                    }
+
+                } catch (\Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+
+            } else {
+                $errorMsg = "Can not find any unsuccessful click with this network_id!";
+            }
+        } else {
+            $errorMsg = 'NetworkId is required';
+        }
+
+        if ($errorMsg) {
+            @file_put_contents(storage_path('logs/sms_callback_errors.txt'), $errorMsg."\n", FILE_APPEND);
+            return response()->json(['error' => $errorMsg]);
+        } else {
+            return response()->json(['status' => true]);
+        }
     }
 
 }

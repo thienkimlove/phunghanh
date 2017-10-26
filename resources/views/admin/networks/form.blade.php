@@ -50,9 +50,14 @@
                 </div>
 
                 <div class="form-group">
-                {!! Form::label('status', 'Status') !!}
-                {!! Form::select('status', array(1 => 'Active', 0 => 'Inactive'), null, ['class' => 'form-control']) !!}
-            </div>
+                    {!! Form::label('status', 'Status') !!}
+                    {!! Form::select('status', array(1 => 'Active', 0 => 'Inactive'), null, ['class' => 'form-control']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('is_sms_callback', 'Is SMS Callback') !!}
+                    {!! Form::select('is_sms_callback', array(0 => 'Not using', 1 => 'Using'), null, ['class' => 'form-control']) !!}
+                </div>
 
             <div class="form-group">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary form-control']) !!}

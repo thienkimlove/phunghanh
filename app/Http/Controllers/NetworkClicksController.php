@@ -25,8 +25,8 @@ class NetworkClicksController extends AdminController
         $modelClass = $this->init();
         $networkId = null;
 
-        $start = $request->has('start')? $request->get('start') : Carbon::now()->startOfMonth()->toDateString();
-        $end = $request->has('end') ? $request->get('end') : Carbon::now()->endOfMonth()->toDateString();
+        $start = $request->has('start')? $request->get('start') : Carbon::now()->startOfMonth()->toDateTimeString();
+        $end = $request->has('end') ? $request->get('end') : Carbon::now()->endOfMonth()->toDateTimeString();
 
         if ($end < $start) {
             $end = $start;
@@ -35,21 +35,19 @@ class NetworkClicksController extends AdminController
         $customUrl = $this->model.'?start='.$start.'&end='.$end;
 
         $networkConversions = NetworkClick::join('networks', 'network_clicks.network_id', '=', 'networks.id')
-            ->whereBetween('network_clicks.created_at', [$start, $end]);
+            ->whereRaw('network_clicks.time between UNIX_TIMESTAMP("'.$start.'") AND UNIX_TIMESTAMP("'.$end.'")');
 
         $conversion = null;
 
         $networks = Network::pluck('name', 'id')->all();
 
         $contents = $modelClass::orderBy('network_clicks.id', 'desc')
-            ->whereBetween('network_clicks.created_at', [$start, $end]);
+            ->whereRaw('network_clicks.time between UNIX_TIMESTAMP("'.$start.'") AND UNIX_TIMESTAMP("'.$end.'")');
 
-        if ($request->has('network_id')) {
-            $networkId = $request->get('network_id');
-            $contents = $contents->where('network_id', $networkId);
-            $customUrl .= '&network_id='.$networkId;
-            $networkConversions = $networkConversions->where('network_clicks.network_id', $networkId);
-        }
+        $networkId =  $request->has('network_id')?  $request->get('network_id') : 1;
+        $contents = $contents->where('network_id', $networkId);
+        $customUrl .= '&network_id='.$networkId;
+        $networkConversions = $networkConversions->where('network_clicks.network_id', $networkId);
 
         if ($request->has('conversion')) {
             $conversion  = $request->get('conversion');

@@ -18,7 +18,9 @@ class NetworkClick extends Model
         'camp_ip',
         'camp_time',
         'callback_time',
-        'callback_response'
+        'callback_response',
+        'origin',
+        'time'
     ];
 
     public function network()

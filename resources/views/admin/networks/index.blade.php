@@ -37,6 +37,7 @@
                                 <th>Extend Params</th>
                                 <th>Link Give to Click Partner</th>
                                 <th>Link Give to Callback Partner</th>
+                                <th>Is SMS Callback</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -76,11 +77,26 @@
 
                                           Trong đó tham số <b>uid</b> là tham số hệ thống bên mình tự sinh cho mỗi lần click.<br/>
 
+                                          @if ($content->is_sms_callback)
+                                              2. Khi có conversion success, bên bạn gọi đường link sau với method "GET" : <br/>
+
+                                              {{url('smscallback?network_id='.$content->id.'&sign={sign}')}}<br/>
+
+                                              Trong đó :<br/>
+                                              - Tham số sign là tham số do bên bạn tự sinh unique với mỗi lần conversion success (Dùng cho mục đích đối xoát sản lượng giửa 2 bên sau này)<br/>
+                                              3. Ví dụ :  <br/>
+
+                                              - User A truy cập vào đường link dịch vụ bên mình , bên mình sẽ chuyển hướng user A sang đường link {{$content->click_url}}&uid=12345<br/>
+                                              - Khi User A đăng ký sử dụng thành công bên bạn, bên bạn gọi tới URL :  {{url('smscallback?network_id='.$content->id.'&sign=Z123A')}}<br/>
+
+                                              Trong đó "Z123A" là mã tự sinh (unique) của bên bạn cho lần đăng ký thành công của user A.<br/>
+                                          @else
+
                                           2. Khi có conversion success, bên bạn gọi đường link sau với method "GET" : <br/>
 
                                           {{url('callback?uid={uid}&sign={sign}')}}<br/>
 
-                                          Trong đó :
+                                          Trong đó :<br/>
                                           - Tham số uid là tham số mình truyền sang với lần click đó (đã mô tả ở mục 1).<br/>
                                           - Tham số sign là tham số do bên bạn tự sinh unique với mỗi lần conversion success (Dùng cho mục đích đối xoát sản lượng giửa 2 bên sau này)<br/>
                                           3. Ví dụ :  <br/>
@@ -88,11 +104,16 @@
                                           - User A truy cập vào đường link dịch vụ bên mình , bên mình sẽ chuyển hướng user A sang đường link {{$content->click_url}}&uid=12345<br/>
                                           - Khi User A đăng ký sử dụng thành công bên bạn, bên bạn gọi tới URL :  {{url('callback?uid=12345&sign=Z123A')}}<br/>
 
-                                          Trong đó "Z123A" là mã tự sinh (unique) của bên bạn cho lần đăng ký thành công của user A.
+                                          Trong đó "Z123A" là mã tự sinh (unique) của bên bạn cho lần đăng ký thành công của user A.<br/>
+
+                                          @endif
+
+                                          * Lưu ý khi gọi callback URL không dùng redirect trực tiếp user sang mà gọi bằng file_get_contents từ server với IP : {{$content->callback_allow_ip}} đã cung cấp.
 
                                       </p>
                                     </td>
 
+                                    <td>{{$content->is_sms_callback ? 'Using' : 'Not Use'}}</td>
                                     <td>{{$content->status ? 'Active' : 'Inactive'}}</td>
 
                                     <td>

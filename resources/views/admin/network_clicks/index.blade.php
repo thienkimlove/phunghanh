@@ -142,9 +142,9 @@
                         ]
                     }
                 },
-                timepicker:false,
+                timepicker:true,
                 minDate:'1970-01-02',
-                format:'Y-m-d'
+                format:'Y-m-d H:i:s'
             });
         });
     </script>

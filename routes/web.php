@@ -20,4 +20,6 @@ Route::get('callback', 'FrontendController@callback');
 Route::get('excamp', 'FrontendController@exampleCamp');
 # gia lap callback cua he thong mobilefun
 Route::get('excallback', 'FrontendController@exampleCallback');
+Route::get('api/source/{uid}', 'FrontendController@source');
+Route::get('smscallback', 'FrontendController@smsCallback');
 
