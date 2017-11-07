@@ -44,11 +44,11 @@ class SmsCron extends Command
 
             try {
 
-                $today = Carbon::now()->toDateString();
-                $yesterday = Carbon::yesterday()->toDateString();
+                $startTime = Carbon::now()->toDateString();
+                $endTime = Carbon::now()->toDateString();
 
-                $url = str_replace('#START', $yesterday, $network->cron_url);
-                $url = str_replace('#END', $today, $url);
+                $url = str_replace('#START', $startTime, $network->cron_url);
+                $url = str_replace('#END', $endTime, $url);
 
                 $smsCronLog = SmsCronLog::create([
                     'network_id' => $network->id,
