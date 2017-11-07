@@ -32,7 +32,7 @@ class NetworksController extends AdminController
             $customUrl .= '&q='.$searchContent;
         }
 
-        $contents = $contents->paginate(10);
+        $contents = $contents->paginate(20);
         $contents->withPath($customUrl);
 
         return view('admin.'.$this->model.'.index', compact('contents', 'searchContent'))->with('model', $this->model);

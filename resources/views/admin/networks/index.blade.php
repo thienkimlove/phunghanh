@@ -77,7 +77,7 @@
 
                                           Trong đó tham số <b>uid</b> là tham số hệ thống bên mình tự sinh cho mỗi lần click.<br/>
 
-                                          @if ($content->is_sms_callback)
+                                          @if ($content->is_sms_callback == 1)
                                               2. Khi có conversion success, bên bạn gọi đường link sau với method "GET" : <br/>
 
                                               {{url('smscallback?network_id='.$content->id.'&sign={sign}')}}<br/>
@@ -90,7 +90,9 @@
                                               - Khi User A đăng ký sử dụng thành công bên bạn, bên bạn gọi tới URL :  {{url('smscallback?network_id='.$content->id.'&sign=Z123A')}}<br/>
 
                                               Trong đó "Z123A" là mã tự sinh (unique) của bên bạn cho lần đăng ký thành công của user A.<br/>
-                                          @else
+
+                                              * Lưu ý khi gọi callback URL không dùng redirect trực tiếp user sang mà gọi bằng file_get_contents từ server với IP : {{$content->callback_allow_ip}} đã cung cấp.
+                                          @elseif ($content->is_sms_callback == 0)
 
                                           2. Khi có conversion success, bên bạn gọi đường link sau với method "GET" : <br/>
 
@@ -106,9 +108,17 @@
 
                                           Trong đó "Z123A" là mã tự sinh (unique) của bên bạn cho lần đăng ký thành công của user A.<br/>
 
-                                          @endif
-
                                           * Lưu ý khi gọi callback URL không dùng redirect trực tiếp user sang mà gọi bằng file_get_contents từ server với IP : {{$content->callback_allow_ip}} đã cung cấp.
+
+                                          @else
+                                          2. Khi có conversion success, bên bạn sẽ lưu trữ bên hệ thống và không gọi trực tiếp sang bên mình.<br/><br/>
+
+                                          Bên mình sẽ tự sử dụng API với đường link <b>{{$content->cron_url}}</b> được cung cấp để lấy danh sách conversion theo một khoảng thời gian nhất dịnh.<br/><br/>
+
+                                          *    Lưu ý hãy mở quyền truy cập cho IP Server : <b>42.112.31.173</b> cho API.
+
+
+                                          @endif
 
                                       </p>
                                     </td>

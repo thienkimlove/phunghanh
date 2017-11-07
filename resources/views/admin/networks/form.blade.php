@@ -55,8 +55,13 @@
                 </div>
 
                 <div class="form-group">
-                    {!! Form::label('is_sms_callback', 'Is SMS Callback') !!}
-                    {!! Form::select('is_sms_callback', array(0 => 'Not using', 1 => 'Using'), null, ['class' => 'form-control']) !!}
+                    {!! Form::label('is_sms_callback', 'SMS mode') !!}
+                    {!! Form::select('is_sms_callback', array(0 => 'Not using SMS callback', 1 => 'Partner call SMS update', 2 => 'System running cron to update'), null, ['class' => 'form-control']) !!}
+                </div>
+
+                <div class="form-group">
+                    {!! Form::label('cron_url', 'Cron URL (In case SMS Callback Mode = System running cron to update )') !!}
+                    {!! Form::text('cron_url', null, ['class' => 'form-control']) !!}
                 </div>
 
             <div class="form-group">

@@ -22,4 +22,16 @@ Route::get('excamp', 'FrontendController@exampleCamp');
 Route::get('excallback', 'FrontendController@exampleCallback');
 Route::get('api/source/{uid}', 'FrontendController@source');
 Route::get('smscallback', 'FrontendController@smsCallback');
+Route::get('sms', function(){
+
+    return view('sms');
+   // return redirect("sms:/**/&body=/* body text here */");
+});
+
+Route::get('test', function(){
+
+    $example = json_decode(file_get_contents('http://v.fatv.vn/partner/subs?start=2017-11-03&end=2017-11-07'), true);
+
+    return response()->json($example);
+});
 

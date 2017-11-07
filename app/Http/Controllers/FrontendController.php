@@ -62,6 +62,8 @@ class FrontendController extends Controller
         }
     }
 
+    // only for network->is_sms_callback = 0
+
     public function callback(Request $request)
     {
         $errorMsg = null;
@@ -79,45 +81,50 @@ class FrontendController extends Controller
                             $networkAllowIps[] = trim($tempIp);
                         }
                         if ($networkAllowIps && (in_array($request->ip(), $networkAllowIps))) {
-                            # retrieve click params.
-                            $clickParams = parse_query($networkClick->log_click_url);
+                           if ($network->is_sms_callback == 0) {
+                               # retrieve click params.
 
-                            $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
-                            parse_str($query_str, $clickParams);
-                            $mapParams = explode(',', $network->map_params);
-                            # request
+                               $clickParams = parse_query($networkClick->log_click_url);
 
-                            # build callback Url
-                            $callbackUrl = $network->callback_url;
+                               $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
+                               parse_str($query_str, $clickParams);
+                               $mapParams = explode(',', $network->map_params);
+                               # request
 
-                            foreach ($mapParams as $couple) {
-                                $tempCouple = explode(':', trim($couple));
-                                $from_param = trim($tempCouple[0]);
-                                $to_param = trim($tempCouple[1]);
-                                if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
-                                    $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                                    $callbackUrl .= $to_param.'='.$clickParams[$from_param];
-                                }
-                            }
-                            if ($network->extend_params) {
-                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                                $callbackUrl .= trim($network->extend_params);
-                            }
+                               # build callback Url
+                               $callbackUrl = $network->callback_url;
 
-                            $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
+                               foreach ($mapParams as $couple) {
+                                   $tempCouple = explode(':', trim($couple));
+                                   $from_param = trim($tempCouple[0]);
+                                   $to_param = trim($tempCouple[1]);
+                                   if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
+                                       $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                       $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                                   }
+                               }
+                               if ($network->extend_params) {
+                                   $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                   $callbackUrl .= trim($network->extend_params);
+                               }
+
+                               $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
 
 
-                            $sign = $request->input('sign') ? $request->input('sign') : null;
+                               $sign = $request->input('sign') ? $request->input('sign') : null;
 
-                            $networkClick->update([
-                                'log_callback_url' => $request->fullUrl(),
-                                'sign' => $sign,
-                                'callback_ip' => $request->ip(),
-                                'callback_time' => Carbon::now()->toDateTimeString(),
-                                'call_start_point_url' => $callbackUrl,
-                                'call_start_point_status' => ($ok) ? true: false,
-                                'callback_response' => $ok
-                            ]);
+                               $networkClick->update([
+                                   'log_callback_url' => $request->fullUrl(),
+                                   'sign' => $sign,
+                                   'callback_ip' => $request->ip(),
+                                   'callback_time' => Carbon::now()->toDateTimeString(),
+                                   'call_start_point_url' => $callbackUrl,
+                                   'call_start_point_status' => ($ok) ? true: false,
+                                   'callback_response' => $ok
+                               ]);
+                           } else {
+                               $errorMsg = 'Invalid Callback Mode';
+                           }
                         } else {
                             $errorMsg = 'Not match allow Ip! Not call callback url!'. 'Allow ip list='.$network->callback_allow_ip. 'but ip access='.$request->ip();
                         }
@@ -183,6 +190,7 @@ class FrontendController extends Controller
     }
 
     //api for sending message base on SMS.
+    // only for network->is_sms_callback = 1
 
     public function smsCallback(Request $request)
     {
@@ -213,44 +221,48 @@ class FrontendController extends Controller
                         $networkAllowIps[] = trim($tempIp);
                     }
                     if ($networkAllowIps && (in_array($request->ip(), $networkAllowIps))) {
-                        # retrieve click params.
-                        $clickParams = parse_query($networkClick->log_click_url);
+                       if ($network->is_sms_callback == 1) {
+                           # retrieve click params.
+                           $clickParams = parse_query($networkClick->log_click_url);
 
-                        $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
-                        parse_str($query_str, $clickParams);
-                        $mapParams = explode(',', $network->map_params);
-                        # request
+                           $query_str = parse_url($networkClick->log_click_url, PHP_URL_QUERY);
+                           parse_str($query_str, $clickParams);
+                           $mapParams = explode(',', $network->map_params);
+                           # request
 
-                        # build callback Url
-                        $callbackUrl = $network->callback_url;
+                           # build callback Url
+                           $callbackUrl = $network->callback_url;
 
-                        foreach ($mapParams as $couple) {
-                            $tempCouple = explode(':', trim($couple));
-                            $from_param = trim($tempCouple[0]);
-                            $to_param = trim($tempCouple[1]);
-                            if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
-                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                                $callbackUrl .= $to_param.'='.$clickParams[$from_param];
-                            }
-                        }
-                        if ($network->extend_params) {
-                            $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                            $callbackUrl .= trim($network->extend_params);
-                        }
+                           foreach ($mapParams as $couple) {
+                               $tempCouple = explode(':', trim($couple));
+                               $from_param = trim($tempCouple[0]);
+                               $to_param = trim($tempCouple[1]);
+                               if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
+                                   $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                   $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                               }
+                           }
+                           if ($network->extend_params) {
+                               $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                               $callbackUrl .= trim($network->extend_params);
+                           }
 
-                        $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
+                           $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
 
-                        $sign = $request->input('sign') ? $request->input('sign') : null;
+                           $sign = $request->input('sign') ? $request->input('sign') : null;
 
-                        $networkClick->update([
-                            'log_callback_url' => $request->fullUrl(),
-                            'sign' => $sign,
-                            'callback_ip' => $request->ip(),
-                            'callback_time' => Carbon::now()->toDateTimeString(),
-                            'call_start_point_url' => $callbackUrl,
-                            'call_start_point_status' => ($ok) ? true: false,
-                            'callback_response' => $ok
-                        ]);
+                           $networkClick->update([
+                               'log_callback_url' => $request->fullUrl(),
+                               'sign' => $sign,
+                               'callback_ip' => $request->ip(),
+                               'callback_time' => Carbon::now()->toDateTimeString(),
+                               'call_start_point_url' => $callbackUrl,
+                               'call_start_point_status' => ($ok) ? true: false,
+                               'callback_response' => $ok
+                           ]);
+                       } else {
+                           $errorMsg = "Invalid Callback Mode!";
+                       }
                     } else {
                         $errorMsg = 'Not match allow Ip! Not call callback url!'. 'Allow ip list='.$network->callback_allow_ip. 'but ip access='.$request->ip();
                     }

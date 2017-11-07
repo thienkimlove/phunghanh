@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\AddAdmin;
+use App\Console\Commands\SmsCron;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         AddAdmin::class,
+        SmsCron::class
     ];
 
     /**
@@ -27,6 +29,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('sms:cron')
+            ->appendOutputTo(storage_path('logs/sms_cron.log'))
+            ->withoutOverlapping()
+            ->everyTenMinutes();
     }
 
     /**
