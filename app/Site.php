@@ -14,6 +14,12 @@ use Illuminate\Support\Str;
 
 class Site
 {
+
+    public static function getSmsCronNetwork()
+    {
+        return Network::where('is_sms_callback', 2)->where('status', true)->pluck('name', 'id')->all();
+    }
+
     public static function getCategoryUrl($category)
     {
         return Str::slug($category->name).'-'.$category->id;

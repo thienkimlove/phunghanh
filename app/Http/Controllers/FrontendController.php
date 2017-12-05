@@ -7,6 +7,7 @@ use App\Category;
 use App\Network;
 use App\NetworkClick;
 use App\Product;
+use App\Report;
 use Carbon\Carbon;
 use DB;
 use function GuzzleHttp\Psr7\parse_query;
@@ -216,11 +217,15 @@ class FrontendController extends Controller
                 try {
                     $network = Network::find($networkClick->network_id);
                     $networkAllowIps = [];
-                    $tempIps = explode(',', $network->callback_allow_ip);
-                    foreach ($tempIps as $tempIp) {
-                        $networkAllowIps[] = trim($tempIp);
+                    if ($network->callback_allow_ip) {
+                        $tempIps = explode(',', $network->callback_allow_ip);
+                        foreach ($tempIps as $tempIp) {
+                            $networkAllowIps[] = trim($tempIp);
+                        }
                     }
-                    if ($networkAllowIps && (in_array($request->ip(), $networkAllowIps))) {
+
+
+                    if (($networkAllowIps && (in_array($request->ip(), $networkAllowIps))) || !$networkAllowIps) {
                        if ($network->is_sms_callback == 1) {
                            # retrieve click params.
                            $clickParams = parse_query($networkClick->log_click_url);
@@ -284,6 +289,34 @@ class FrontendController extends Controller
         } else {
             return response()->json(['status' => true]);
         }
+    }
+
+    public function report(Request $request)
+    {
+        $networkId = $request->get('network_id');
+        $startDate = $request->get('start');
+        $endDate = $request->get('end');
+
+        $response = [];
+
+        if ($networkId && $startDate && $endDate) {
+            $network = Network::where('id', $networkId)->where('is_sms_callback', 2)->get();
+
+            if ($network->count() > 0) {
+                $network = $network->first();
+
+
+                $reports = Report::where('network_id', $network->id)->whereBetween('date', [$startDate, $endDate])->get();
+
+                foreach ($reports as $report) {
+                    $response[] = [
+                        'msisdn' => $report->phone,
+                        'createDate' => $report->created_at->toDateString()
+                    ];
+                }
+            }
+        }
+        return response()->json($response);
     }
 
 }

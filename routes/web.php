@@ -11,6 +11,9 @@ Route::resource('admin/users', 'UsersController');
 Route::resource('admin/categories', 'CategoriesController');
 Route::resource('admin/networks', 'NetworksController');
 Route::resource('admin/network_clicks', 'NetworkClicksController');
+Route::resource('admin/reports', 'ReportsController');
+Route::get('admin/sms-cron-create-report', 'ReportsController@smsCronCreateReport');
+Route::post('admin/report-submit', 'ReportsController@reportSubmit');
 
 #Frontend
 Route::get('/', 'FrontendController@index');
@@ -21,6 +24,7 @@ Route::get('excamp', 'FrontendController@exampleCamp');
 # gia lap callback cua he thong mobilefun
 Route::get('excallback', 'FrontendController@exampleCallback');
 Route::get('api/source/{uid}', 'FrontendController@source');
+Route::get('report', 'FrontendController@report');
 Route::get('smscallback', 'FrontendController@smsCallback');
 Route::get('sms', function(){
 
@@ -30,7 +34,7 @@ Route::get('sms', function(){
 
 Route::get('test', function(){
 
-    $example = json_decode(file_get_contents('http://v.fatv.vn/partner/subs?start=2017-11-03&end=2017-11-07'), true);
+    $example = json_decode(file_get_contents('http://v.fatv.vn/partner/subs?start=2017-11-08&end=2017-11-08'), true);
 
     return response()->json($example);
 });

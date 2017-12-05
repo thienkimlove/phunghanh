@@ -70,6 +70,14 @@
                         <a href="{{url('admin', 'network_clicks')}}"><i class="fa fa-file-movie-o fa-fw"></i>Thống kê</a>
                     </li>
 
+                    <li>
+                        <a href="{{url('admin', 'reports')}}"><i class="fa fa-file-movie-o fa-fw"></i>Xem Sản lượng của Network Loại SMS Cron Theo Ngày</a>
+                    </li>
+
+                    <li>
+                        <a href="{{url('admin/sms-cron-create-report')}}"><i class="fa fa-file-movie-o fa-fw"></i>Thêm Sản lượng của Network Loại SMS Cron Theo Ngày</a>
+                    </li>
+
                 </ul>
             </div>
             <!-- /.sidebar-collapse -->
