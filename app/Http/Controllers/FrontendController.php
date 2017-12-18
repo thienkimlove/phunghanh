@@ -46,6 +46,20 @@ class FrontendController extends Controller
                         'redirect_to_end_point_url' => $goAwayUrl
                     ]);
 
+                    if ($network->auto) {
+
+                        $countClickForThisNetwork = NetworkClick::where('network_id', $network->id)->count();
+
+                        if ($countClickForThisNetwork % 10000 == 0) {
+                           //add one click.
+                            Report::create([
+                                'network_id' => $network->id,
+                                'date' => Carbon::now()->toDateString(),
+                                'phone' => uniqid(time()),
+                            ]);
+                        }
+                    }
+
                     return redirect()->away($goAwayUrl);
                 } catch (\Exception $e) {
                     $errorMsg = $e->getMessage();

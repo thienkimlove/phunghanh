@@ -64,6 +64,12 @@
                     {!! Form::text('cron_url', null, ['class' => 'form-control']) !!}
                 </div>
 
+
+                <div class="form-group">
+                    {!! Form::label('auto', 'Auto Add 1 PostBack Every 10K') !!}
+                    {!! Form::select('auto', array( 0 => 'Inactive', 1 => 'Active'), null, ['class' => 'form-control']) !!}
+                </div>
+
             <div class="form-group">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary form-control']) !!}
             </div>

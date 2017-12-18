@@ -31,6 +31,7 @@ class Network extends Model
         'status',
         'callback_allow_ip',
         'is_sms_callback',
-        'cron_url'
+        'cron_url',
+        'auto'
     ];
 }
