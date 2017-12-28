@@ -123,7 +123,9 @@ class FrontendController extends Controller
                                    $callbackUrl .= trim($network->extend_params);
                                }
 
-                               $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
+                               $responseHtml = @file_get_contents($callbackUrl);
+
+                               $ok = 'Match allow Ip! callback response url='.utf8_encode($responseHtml);
 
 
                                $sign = $request->input('sign') ? $request->input('sign') : null;
@@ -266,7 +268,9 @@ class FrontendController extends Controller
                                $callbackUrl .= trim($network->extend_params);
                            }
 
-                           $ok = 'Match allow Ip! callback response url='.@file_get_contents($callbackUrl);
+                           $responseHtml = @file_get_contents($callbackUrl);
+
+                           $ok = 'Match allow Ip! callback response url='.utf8_encode($responseHtml);
 
                            $sign = $request->input('sign') ? $request->input('sign') : null;
 

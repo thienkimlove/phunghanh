@@ -47,9 +47,9 @@
                                 <tr>
                                     <td>{{$content->id}}</td>
                                     <td>{{$content->name}}</td>
-                                    <td>{{$content->callback_allow_ip}}</td>
-                                    <td>{{$content->click_url}}</td>
-                                    <td>{{$content->callback_url}}</td>
+                                    <td>{{str_limit($content->callback_allow_ip, 20)}}</td>
+                                    <td>{{str_limit($content->click_url, 20)}}</td>
+                                    <td>{{str_limit($content->callback_url, 20)}}</td>
 
                                     <td>
                                       {{$content->map_params}}
