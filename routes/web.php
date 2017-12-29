@@ -1,19 +1,29 @@
 <?php
 
 #Admin Routes
-Route::get('admin/login', 'AdminController@redirectToGoogle');
-Route::get('admin/logout', 'AdminController@logout');
-Route::get('admin/callback', 'AdminController@handleGoogleCallback');
-Route::get('admin/notice', 'AdminController@notice');
-Route::get('admin', 'AdminController@index');
-#Content Routes
-Route::resource('admin/users', 'UsersController');
-Route::resource('admin/categories', 'CategoriesController');
-Route::resource('admin/networks', 'NetworksController');
-Route::resource('admin/network_clicks', 'NetworkClicksController');
-Route::resource('admin/reports', 'ReportsController');
-Route::get('admin/sms-cron-create-report', 'ReportsController@smsCronCreateReport');
-Route::post('admin/report-submit', 'ReportsController@reportSubmit');
+Route::get('login', 'AdminController@redirectToGoogle')->name('login');
+Route::get('logout', 'AdminController@logout')->name('logout');
+Route::get('sso-callback', 'AdminController@handleGoogleCallback')->name('sso-callback');
+Route::get('notice', 'AdminController@notice')->name('notice');
+
+
+Route::group(['middleware' => 'auth.backend'], function() {
+    Route::get('admin', 'AdminController@index');
+    #Content Routes
+    Route::resource('users', 'UsersController');
+    Route::get('users.dataTables', ['uses' => 'UsersController@dataTables', 'as' => 'users.dataTables']);
+    Route::get('networks.dataTables', ['uses' => 'NetworksController@dataTables', 'as' => 'networks.dataTables']);
+    Route::get('networks.connect/{id}', ['uses' => 'NetworksController@connect', 'as' => 'networks.connect']);
+    Route::resource('networks', 'NetworksController');
+
+    Route::get('network_clicks.dataTables', ['uses' => 'NetworkClicksController@dataTables', 'as' => 'network_clicks.dataTables']);
+    Route::get('network_clicks/export-to-excel', 'NetworkClicksController@export')->name('network_clicks.export');
+    Route::resource('network_clicks', 'NetworkClicksController');
+
+
+    Route::resource('reports', 'ReportsController');
+    Route::get('reports.dataTables', ['uses' => 'ReportsController@dataTables', 'as' => 'reports.dataTables']);
+});
 
 #Frontend
 Route::get('/', 'FrontendController@index');

@@ -184,6 +184,8 @@ return [
         Laracasts\Flash\FlashServiceProvider::class, 
         Laravel\Socialite\SocialiteServiceProvider::class,
         Cviebrock\EloquentSluggable\ServiceProvider::class,
+        Gtk\FlashMessage\FlashMessageServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 
@@ -239,6 +241,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,  
         'Excel' => Maatwebsite\Excel\Facades\Excel::class, 
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];

@@ -3,13 +3,11 @@
 namespace App\Http\Controllers;
 
 
-use App\Category;
 use App\Network;
 use App\NetworkClick;
 use App\Product;
 use App\Report;
 use Carbon\Carbon;
-use DB;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 

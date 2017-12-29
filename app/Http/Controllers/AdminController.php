@@ -3,49 +3,10 @@
 namespace App\Http\Controllers;
 use App\User;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Intervention\Image\Facades\Image;
 use Laravel\Socialite\Facades\Socialite;
-use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth.backend',  ['except' => [
-            'ajax',
-            'redirectToGoogle',
-            'handleGoogleCallback',
-            'notice'
-        ]]);
-    }
-
-    /**
-     * Save images
-     * @param $file
-     * @param null $old
-     * @return string
-     */
-    public function saveImage($file, $old = null)
-    {
-        $filename = $file->getClientOriginalName();
-
-        if (file_exists(public_path('files/images/'. $filename))) {
-            $filename = substr(uniqid(), 0, 4).'_'.$filename;
-        }
-
-        Image::make($file->getRealPath())->save(public_path('files/images/'. $filename));
-
-        if ($old) {
-           // @unlink(public_path('files/images/' .$old));
-        }
-        return $filename;
-    }
-
     /** Redirect to G+ authenticate.
      * @return mixed
      */
@@ -62,38 +23,37 @@ class AdminController extends Controller
             $user = User::where('email', $googleUser->email)->get();
 
             if ($user->count() > 0) {
-                session()->put('admin_login', $user->first());
+                auth()->login($user->first(), true);
                 session()->put('admin_token', $googleUser->token);
                 return redirect('/admin');
             } else {
-                flash('Invalid Credentials!');
+                flash()->error('Error', 'Invalid Credentials!');
                 @file_get_contents('https://accounts.google.com/o/oauth2/revoke?token='. $googleUser->token);
-                return redirect('admin/notice');
+                return redirect('notice');
             }
         } catch (Exception $e) {
-            flash('Error when login! Please try again!');
-            return redirect('admin/notice');
+            flash()->error('Error', $e->getMessage());
+            return redirect('notice');
         }
 
     }
 
     public function logout()
     {
-        session()->forget('admin_login');
         @file_get_contents('https://accounts.google.com/o/oauth2/revoke?token='. session()->get('admin_token'));
         session()->forget('admin_token');
-        return redirect('admin/notice');
+        auth()->logout();
+        return redirect('notice');
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $user = session()->get('admin_login');
-        return view('admin.index', compact('user'));
+        return view('v2.index');
     }
 
     public function notice()
     {
-        return view('admin.notice');
+        return view('v2.notice');
     }
 
 }

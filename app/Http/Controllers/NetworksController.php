@@ -2,100 +2,57 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NetworkRequest;
+use App\Network;
 use Illuminate\Http\Request;
-use Validator;
 
-class NetworksController extends AdminController
+class NetworksController extends Controller
 {
 
-    public $model = 'networks';
-
-    public $validator = [
-        'name' => 'required'
-    ];
-    private function init()
+    public function index()
     {
-        return '\\App\\' . ucfirst(str_singular($this->model));
-    }
-    public function index(Request $request)
-    {
-
-        $searchContent = '';
-        $modelClass = $this->init();
-
-        $customUrl = 'admin/'.$this->model.'?init=1';
-
-        $contents = $modelClass::latest('created_at');
-        if ($request->input('q')) {
-            $searchContent = urldecode($request->input('q'));
-            $contents = $contents->where('name', 'LIKE', '%'. $searchContent. '%');
-            $customUrl .= '&q='.$searchContent;
-        }
-
-        $contents = $contents->paginate(20);
-        $contents->withPath($customUrl);
-
-        return view('admin.'.$this->model.'.index', compact('contents', 'searchContent'))->with('model', $this->model);
+        return view('v2.networks.index');
     }
 
     public function create()
     {
-        $modelClass = $this->init();
-        $content = new $modelClass;
-        return view('admin.'.$this->model.'.form', compact('content'))->with('model', $this->model);
+        return view('v2.networks.create');
     }
 
-    public function store(Request $request)
+    public function store(NetworkRequest $request)
     {
-        $validator = Validator::make($request->all(), $this->validator);
-        if ($validator->fails()) {
-            return redirect('admin/'.$this->model.'/create')
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $data = $request->all();
-        if ($request->file('image') && $request->file('image')->isValid()) {
-            $data['image'] = $this->saveImage($request->file('image'));
-        } else {
-            unset($data['image']);
-        }
-        $modelClass = $this->init();
-        $modelClass::create($data);
-        flash()->success('Success created!');
-        return redirect('admin/'.$this->model);
+        $request->store();
+
+        flash()->success('Success!', 'Network successfully created.');
+
+        return redirect()->route('networks.index');
     }
+
     public function edit($id)
     {
-        $modelClass = $this->init();
-        $content = $modelClass::find($id);
-        return view('admin.'.$this->model.'.form', compact('content'))->with('model', $this->model);
+        $network = Network::find($id);
+
+        return view('v2.networks.edit', compact('network'));
     }
-    public function update($id, Request $request)
+
+    public function update(NetworkRequest $request, $id)
     {
-        $validator = Validator::make($request->all(), $this->validator);
-        if ($validator->fails()) {
-            return redirect('admin/'.$this->model.'/' . $id . '/edit')
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $modelClass = $this->init();
-        $content = $modelClass::find($id);
-        $data = $request->all();
-        if ($request->file('image') && $request->file('image')->isValid()) {
-            $data['image'] = $this->saveImage($request->file('image'), $content->image);
-        } else {
-            unset($data['image']);
-        }
-        $content->update($data);
-        flash()->success('Success edited!');
-        return redirect('admin/'.$this->model);
+        $request->save($id);
+
+        flash()->success('Thành công', 'Cập nhật thành công!');
+
+        return redirect()->route('networks.index');
     }
-    public function destroy($id)
+
+    public function connect($id)
     {
-        $modelClass = $this->init();
-        $content = $modelClass::find($id);
-        $content->delete();
-        flash()->success('Success Deleted!');
-        return redirect('admin/'.$this->model);
+        $content = Network::find($id);
+        return response()->json(['html' => view('v2.how', compact('content'))->render()]);
     }
+
+    public function dataTables(Request $request)
+    {
+        return Network::getDataTables($request);
+    }
+
 }

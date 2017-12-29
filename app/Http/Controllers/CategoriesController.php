@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 
-class CategoriesController extends AdminController
+class CategoriesController extends Controller
 {
 
     public $model = 'categories';
@@ -23,7 +23,7 @@ class CategoriesController extends AdminController
         $searchContent = '';
         $modelClass = $this->init();
 
-        $customUrl = 'admin/'.$this->model.'?init=1';
+        $customUrl = $this->model.'?init=1';
 
         $contents = $modelClass::latest('created_at');
         if ($request->input('q')) {
@@ -35,60 +35,49 @@ class CategoriesController extends AdminController
         $contents = $contents->paginate(10);
         $contents->withPath($customUrl);
 
-        return view('admin.'.$this->model.'.index', compact('contents', 'searchContent'))->with('model', $this->model);
+        return view('v2.'.$this->model.'.index', compact('contents', 'searchContent'))->with('model', $this->model);
     }
 
     public function create()
     {
         $modelClass = $this->init();
         $content = new $modelClass;
-        return view('admin.'.$this->model.'.form', compact('content'))->with('model', $this->model);
+        return view('v2.'.$this->model.'.form', compact('content'))->with('model', $this->model);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->validator);
         if ($validator->fails()) {
-            return redirect('admin/'.$this->model.'/create')
+            return redirect($this->model.'/create')
                 ->withErrors($validator)
                 ->withInput();
         }
-        $data = $request->all();
-        if ($request->file('image') && $request->file('image')->isValid()) {
-            $data['image'] = $this->saveImage($request->file('image'));
-        } else {
-            unset($data['image']);
-        }
+
         $modelClass = $this->init();
-        $modelClass::create($data);
+        $modelClass::create($request->all());
         flash()->success('Success created!');
-        return redirect('admin/'.$this->model);
+        return redirect($this->model);
     }
     public function edit($id)
     {
         $modelClass = $this->init();
         $content = $modelClass::find($id);
-        return view('admin.'.$this->model.'.form', compact('content'))->with('model', $this->model);
+        return view('v2.'.$this->model.'.form', compact('content'))->with('model', $this->model);
     }
     public function update($id, Request $request)
     {
         $validator = Validator::make($request->all(), $this->validator);
         if ($validator->fails()) {
-            return redirect('admin/'.$this->model.'/' . $id . '/edit')
+            return redirect($this->model.'/' . $id . '/edit')
                 ->withErrors($validator)
                 ->withInput();
         }
         $modelClass = $this->init();
         $content = $modelClass::find($id);
-        $data = $request->all();
-        if ($request->file('image') && $request->file('image')->isValid()) {
-            $data['image'] = $this->saveImage($request->file('image'), $content->image);
-        } else {
-            unset($data['image']);
-        }
-        $content->update($data);
+        $content->update($request->all());
         flash()->success('Success edited!');
-        return redirect('admin/'.$this->model);
+        return redirect($this->model);
     }
     public function destroy($id)
     {
@@ -96,6 +85,6 @@ class CategoriesController extends AdminController
         $content = $modelClass::find($id);
         $content->delete();
         flash()->success('Success Deleted!');
-        return redirect('admin/'.$this->model);
+        return redirect($this->model);
     }
 }

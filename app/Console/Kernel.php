@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\AddAdmin;
+use App\Console\Commands\ClearOld;
 use App\Console\Commands\SmsCron;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         AddAdmin::class,
-        SmsCron::class
+        SmsCron::class,
+        ClearOld::class,
     ];
 
     /**

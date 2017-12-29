@@ -11,11 +11,11 @@ class AdminAuthenticate
     {
         //login check
 
-        if (!session()->has('admin_login')) {
+        if (!auth()->user()) {
             if ($request->ajax() || $request->wantsJson()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect()->guest('admin/login');
+                return redirect()->guest('login');
             }
         }
 
