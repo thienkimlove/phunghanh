@@ -24,6 +24,7 @@
     <link href="/v2/vendor/ubold/assets/plugins/datatables/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="/v2/vendor/ubold/assets/plugins/datatables/fixedColumns.dataTables.min.css" rel="stylesheet" type="text/css"/>
     <link href="/v2/vendor/ubold/assets/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+
 @endsection
 
 @section('content')
@@ -87,7 +88,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card-box table-responsive">
-                <p class="text-muted font-13 m-b-30"></p>
+                <p class="text-muted font-13 m-b-30">Total : <span id="total_rows"></span></p>
                 <table id="dataTables-clicks" class="table table-striped table-bordered table-actions-bar">
                     <thead>
                     <tr>
@@ -160,7 +161,10 @@
                     {data: 'camp_to_start', name: 'camp_to_start'},
                     {data: 'start_response', name: 'start_response'}
                 ],
-                order: [[1, 'desc']]
+                order: [[1, 'desc']],
+                "drawCallback": function( settings) {
+                    $('#total_rows').text(settings.fnRecordsDisplay());
+                }
             });
 
             $('#search-form').on('submit', function(e) {

@@ -65,7 +65,13 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
-        Network::create($this->all());
+        $network = Network::create($this->all());
+
+        if ($network->is_sms_callback == 2 && !$network->cron_url) {
+           $network->update([
+               'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
+           ]);
+        }
 
         return $this;
     }
@@ -88,6 +94,12 @@ class NetworkRequest extends FormRequest
         $network = Network::findOrFail($id);
 
         $network->update($this->all());
+
+        if ($network->is_sms_callback == 2 && !$network->cron_url) {
+            $network->update([
+                'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
+            ]);
+        }
 
 
         return $this;

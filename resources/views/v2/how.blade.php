@@ -1,5 +1,15 @@
 <p id="document{{$content->id}}">
-    Thông tin kết nối : <br>
+    Thông tin kết nối cho phía đối tác traffic: <br>
+
+    <?php $detailUrl = ''; foreach (explode(',',$content->map_params) as $couple) {
+        $tempCouple = explode(':', $couple);
+        $detailUrl .='&'.$tempCouple[0].'={'.$tempCouple[0].'}';
+    } ?>
+
+
+    1. Link : {{url('camp?network_id='.$content->id.$detailUrl)}} <br><br><br>
+
+    Thông tin kết nối cho phía đối tác dịch vụ: <br>
     1. Khi có traffic bên mình sẽ chuyển người dùng sang đường link : {{$content->click_url}}&uid=xxxxxx<br/>
 
     Trong đó tham số <b>uid</b> là tham số hệ thống bên mình tự sinh cho mỗi lần click.<br/>
