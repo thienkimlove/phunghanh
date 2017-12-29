@@ -45,7 +45,7 @@ class ClearOld extends Command
 
         $now = Carbon::now()->timestamp;
 
-        $time = Carbon::now()->subDays(10)->toDateTimeString();
+        $time = Carbon::now()->subDays(5)->toDateTimeString();
 
         try {
 

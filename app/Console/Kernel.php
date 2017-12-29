@@ -36,6 +36,11 @@ class Kernel extends ConsoleKernel
             ->appendOutputTo(storage_path('logs/sms_cron.log'))
             ->withoutOverlapping()
             ->everyTenMinutes();
+
+        $schedule->command('clear:old')
+            ->appendOutputTo(storage_path('logs/clear_old.log'))
+            ->withoutOverlapping()
+            ->dailyAt("01:00");
     }
 
     /**
