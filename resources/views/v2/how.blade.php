@@ -7,7 +7,7 @@
     } ?>
 
 
-    1. Link : {{url('camp?network_id='.$content->id.$detailUrl)}} <br><br><br>
+    1. {{$content->name}} : {{url('camp?network_id='.$content->id.$detailUrl)}} <br><br><br>
 
     Thông tin kết nối cho phía đối tác dịch vụ: <br>
     1. Khi có traffic bên mình sẽ chuyển người dùng sang đường link : {{$content->click_url}}&uid=xxxxxx<br/>

@@ -63,7 +63,7 @@ class Network extends Model
             ->editColumn('status', function ($network) {
                 return $network->status ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
             })->editColumn('click_url', function ($network) {
-                return str_limit($network->click_url, 20);
+                return $network->click_url;
             })
             ->editColumn('auto', function ($network) {
                 return $network->auto ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
