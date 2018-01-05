@@ -30,6 +30,7 @@
                     <ul class="submenu">
                         <li><a href="{{ url('/users')}}">User</a></li>
                         <li><a href="{{ url('/networks')}}">Network</a></li>
+                        <li><a href="{{ url('/connections')}}">Connection</a></li>
                     </ul>
                 </li>
             @endif

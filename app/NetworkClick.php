@@ -32,7 +32,7 @@ class NetworkClick extends Model
 
     public static function getDataTables($request)
     {
-        $network_click = static::select('*')->with('network')->latest('created_at');
+        $network_click = static::select('*')->with('network')->latest('time');
 
         return DataTables::of($network_click)
             ->filter(function ($query) use ($request) {

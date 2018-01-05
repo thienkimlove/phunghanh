@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Connection;
 use App\Network;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -65,15 +66,27 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
-        $network = Network::create($this->all());
+        if ($this->has('connection_id')) {
+            $connection = Connection::find($this->get('connection_id'));
+            $this->merge([
+                'callback_url' => $connection->callback,
+                'map_params' => $connection->map_params,
+                'extend_params' => $connection->extend_params,
+                'callback_allow_ip' => '',
+            ]);
 
-        if ($network->is_sms_callback == 2 && !$network->cron_url) {
-           $network->update([
-               'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
-           ]);
+            $network = Network::create($this->all());
+
+            if ($network->is_sms_callback == 2) {
+                $network->update([
+                    'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
+                ]);
+            }
+
+            return $this;
         }
 
-        return $this;
+
     }
 
     public function save($id)

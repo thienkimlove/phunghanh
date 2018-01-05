@@ -46,9 +46,7 @@ class FrontendController extends Controller
 
                     if ($network->auto) {
 
-                        $countClickForThisNetwork = NetworkClick::where('network_id', $network->id)->count();
-
-                        if ($countClickForThisNetwork % 10000 == 0) {
+                        if ($networkClick->id % 10000 == 0) {
                            //add one click.
                             Report::create([
                                 'network_id' => $network->id,

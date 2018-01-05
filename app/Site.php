@@ -9,6 +9,7 @@
 namespace App;
 
 
+use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Str;
 
@@ -18,6 +19,31 @@ class Site
     public static function getSmsCronNetwork()
     {
         return Network::where('is_sms_callback', 2)->where('status', true)->pluck('name', 'id')->all();
+    }
+
+    public static function getManualNetworks()
+    {
+        $startTime = Carbon::now()->startOfDay()->timestamp;
+
+        $networks = Network::join('network_clicks', 'network_clicks.network_id', '=', 'networks.id')
+            ->where('networks.is_sms_callback', 2)
+            ->where('networks.status', true)
+            ->where('network_clicks.time', '>', $startTime)
+            ->selectRaw('COUNT(network_clicks.id) as total, networks.id as network_id, networks.name as network_name')
+            ->groupBy('networks.id')
+            ->get();
+        $response = [];
+
+        foreach ($networks as $network) {
+            $response[$network->network_id] = $network->network_name.' - Clicks Today : '.$network->total;
+        }
+
+        return $response;
+    }
+
+    public static function getConnection()
+    {
+        return Connection::pluck('name', 'id')->all();
     }
 
     public static function getCategoryUrl($category)

@@ -56,7 +56,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label">Network</label>
                             <div class="col-md-9">
-                                {!! Form::select('network_id', \App\Network::where('is_sms_callback', 2)->pluck('name','id')->all(), null, ['class' => 'form-control select2']) !!}
+                                {!! Form::select('network_id', ['' => '=== Chọn Network ===']  + \App\Site::getManualNetworks(), null, ['class' => 'form-control select2']) !!}
                             </div>
                         </div>
 

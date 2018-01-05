@@ -14,17 +14,9 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="btn-group pull-right m-t-15">
-                <a href="{{ route('networks.index') }}" class="btn btn-primary waves-effect waves-light"><span class="m-r-5"><i class="fa fa-list"></i></span> List</a>
+                <a href="{{ route('connections.index') }}" class="btn btn-primary waves-effect waves-light"><span class="m-r-5"><i class="fa fa-list"></i></span> List</a>
             </div>
-            <h4 class="page-title">Tạo mới network</h4>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="{{ route('networks.index') }}">Danh sách network</a>
-                </li>
-                <li class="active">
-                    Tạo mới network
-                </li>
-            </ol>
+            <h4 class="page-title">Chi tiết connection</h4>
         </div>
     </div>
 
@@ -33,63 +25,36 @@
             <div class="card-box">
                 <div class="row">
                     <div class="col-sm-12">
-                        {!! Form::open(['route' => ['networks.store'], 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
+                        {!! Form::open(['route' => ['connections.update', $connection->id], 'method' => 'put', 'role' => 'form', 'class' => 'form-horizontal']) !!}
                         @include('v2.layouts.partials.errors')
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Tên network</label>
+                            <label class="col-md-3 control-label">Tên Connection</label>
                             <div class="col-md-9">
-                                {!! Form::text('name', null, ['id' => 'name', 'class' => 'form-control', 'placeholder' => 'Tên network', 'required' => 'required']) !!}
+                                {!! Form::text('name', $connection->name, ['id' => 'name', 'class' => 'form-control', 'placeholder' => 'Tên', 'required' => 'required']) !!}
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Click Url</label>
+                            <label class="col-md-3 control-label">Callback Url</label>
                             <div class="col-md-9">
-                                {!! Form::text('click_url', null, ['id' => 'click_url', 'class' => 'form-control', 'placeholder' => 'Click Url', 'required' => 'required']) !!}
+                                {!! Form::text('callback', $connection->callback, ['id' => 'callback', 'class' => 'form-control', 'placeholder' => 'Callback Url', 'required' => 'required']) !!}
                             </div>
                         </div>
-
-                        <div class="card-box">
-                            <h4>Connection</h4>
-
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Chọn Connection</label>
-                                <div class="col-md-9">
-                                    {!! Form::select('connection_id', ['' => '===== Chọn Connection ====='] + \App\Site::getConnection(), null, ['class' => 'form-control select2']) !!}
-                                </div>
-                            </div>
-
-                        </div>
-
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Loại</label>
+                            <label class="col-md-3 control-label">Map Params</label>
                             <div class="col-md-9">
-                                {!! Form::select('is_sms_callback', array(0 => 'Not using SMS callback', 1 => 'Partner call SMS update', 2 => 'System running cron to update'), null, ['class' => 'form-control select2']) !!}
+                                {!! Form::text('map_params', $connection->map_params, ['id' => 'map_params', 'class' => 'form-control', 'placeholder' => 'Map Params', 'required' => 'required']) !!}
                             </div>
                         </div>
-
 
                         <div class="form-group">
-                            <label class="col-md-3 control-label">Auto Add PostBack (In case SMS mode = System running cron to update)</label>
+                            <label class="col-md-3 control-label">Extend Params</label>
                             <div class="col-md-9">
-                                {!! Form::checkbox('auto', '1', 0, ['data-plugin' => 'switchery', 'data-color' => '#81c868']) !!}
-                                <span class="lbl"></span>
+                                {!! Form::text('extend_params', $connection->extend_params, ['id' => 'extend_params', 'class' => 'form-control', 'placeholder' => 'Extend Params']) !!}
                             </div>
                         </div>
-
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Trạng thái</label>
-                            <div class="col-md-9">
-                                {!! Form::checkbox('status', '1', 1, ['data-plugin' => 'switchery', 'data-color' => '#81c868']) !!}
-                                <span class="lbl"></span>
-                            </div>
-                        </div>
-
-
-
 
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right"></label>
@@ -112,7 +77,6 @@
     <script type="text/javascript" src="/v2/vendor/ubold/assets/plugins/jquery-quicksearch/jquery.quicksearch.js"></script>
     <script src="/v2/vendor/ubold/assets/plugins/select2/js/select2.min.js" type="text/javascript"></script>
     <script src="/v2/vendor/ubold/assets/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/v2/vendor/ubold/assets/plugins/bootstrap-filestyle/js/bootstrap-filestyle.min.js" type="text/javascript"></script>
     <script src="/v2/vendor/ubold/assets/plugins/bootstrap-touchspin/js/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
     <script src="/v2/vendor/ubold/assets/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js" type="text/javascript"></script>
 
@@ -121,14 +85,15 @@
     <script type="text/javascript" src="/v2/vendor/ubold/assets/plugins/autocomplete/countries.js"></script>
     <script type="text/javascript" src="/v2/vendor/ubold/assets/pages/autocomplete.js"></script>
 
-    <script type="text/javascript" src="/v2/vendor/ubold/assets/pages/jquery.form-advanced.init.js"></script>
+    {{--<script type="text/javascript" src="/v2/vendor/ubold/assets/pages/jquery.form-advanced.init.js"></script>--}}
 @endsection
 
 @section('inline_scripts')
-<script>
-    (function($){
-        $('.select2').select2();
+    <script>
+        (function($){
+            $('.select2').select2();
 
-    })(jQuery);
-</script>
+        })(jQuery);
+    </script>
+
 @endsection
