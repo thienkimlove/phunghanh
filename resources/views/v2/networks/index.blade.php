@@ -81,8 +81,10 @@
                 <table id="dataTables-networks" class="table table-striped table-bordered table-actions-bar">
                     <thead>
                     <tr>
-                        <th width="20%">Tên</th>
+                        <th width="10%">ID</th>
+                        <th width="10%">Tên</th>
                         <th width="20%">ClickUrl</th>
+                        <th width="20%">RedirectURL</th>
                         <th width="20%">Callback</th>
                         <th width="10%">Auto</th>
                         <th width="10%">Ngày tạo</th>
@@ -161,15 +163,17 @@
                     }
                 },
                 columns: [
+                    {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
                     {data: 'click_url', name: 'click_url'},
+                    {data: 'redirect_if_duplicate', name: 'redirect_if_duplicate'},
                     {data: 'callback', name: 'callback'},
                     {data: 'auto', name: 'auto'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ],
-                order: [[4, 'desc']]
+                order: [[1, 'desc']]
             });
 
             $('#search-form').on('submit', function(e) {

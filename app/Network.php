@@ -33,12 +33,14 @@ class Network extends Model
         'callback_allow_ip',
         'is_sms_callback',
         'cron_url',
-        'auto'
+        'auto',
+        'redirect_if_duplicate',
+        'number_redirect',
     ];
 
     public static function getDataTables($request)
     {
-        $network = static::select('*');
+        $network = static::select('*')->orderBy('created_at', 'desc');
 
         return DataTables::of($network)
             ->filter(function ($query) use ($request) {
@@ -64,6 +66,8 @@ class Network extends Model
                 return $network->status ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
             })->editColumn('click_url', function ($network) {
                 return $network->click_url;
+            })->editColumn('redirect_if_duplicate', function ($network) {
+                return $network->redirect_if_duplicate;
             })
             ->editColumn('auto', function ($network) {
                 return $network->auto ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
@@ -85,7 +89,7 @@ class Network extends Model
                 return '<a class="table-action-btn" title="Chỉnh sửa Network" href="' . route('networks.edit', $network->id) . '"><i class="fa fa-pencil text-success"></i></a> <a class="table-action-btn" id="btn-connect-' . $network->id . '" title="Show Connection" data-url="' . route('networks.connect', $network->id) . '" href="javascript:;"><i class="fa fa-terminal text-warning"></i></a>';
 
             })
-            ->rawColumns(['action', 'name', 'status', 'callback', 'auto'])
+            ->rawColumns(['action', 'name', 'status', 'callback', 'auto', 'redirect_if_duplicate'])
             ->make(true);
     }
 }

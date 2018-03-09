@@ -93,11 +93,8 @@ class SmsCron extends Command
     private function fireCallback($content)
     {
         try {
-            $now = Carbon::now()->toDateTimeString();
             $networkClickTrigger = NetworkClick::where('network_id', $content->network_id)
-                ->whereNull('log_callback_url')
-                ->where('created_at', '<', $now)
-                ->orderBy('created_at', 'desc')
+                ->where('is_lead', false)
                 ->limit(1)
                 ->get();
 
@@ -141,6 +138,7 @@ class SmsCron extends Command
 
                     $networkClick->update([
                         'log_callback_url' => $network->cron_url,
+                        'is_lead' => true,
                         'sign' => $content->id,
                         'callback_ip' => '42.112.31.173',
                         'callback_time' => Carbon::now()->toDateTimeString(),

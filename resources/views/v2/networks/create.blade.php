@@ -81,6 +81,21 @@
 
 
                         <div class="form-group">
+                            <label class="col-md-3 control-label">URL Redirect If Duplicate</label>
+                            <div class="col-md-9">
+                                {!! Form::text('redirect_if_duplicate', null, ['id' => 'redirect_if_duplicate', 'class' => 'form-control', 'placeholder' => 'URL Redirect']) !!}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Number of Time Redirect</label>
+                            <div class="col-md-9">
+                                {!! Form::number('number_redirect', null, ['id' => 'number_redirect', 'class' => 'form-control', 'placeholder' => 'Number of Time Redirect']) !!}
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
                             <label class="col-md-3 control-label">Trạng thái</label>
                             <div class="col-md-9">
                                 {!! Form::checkbox('status', '1', 1, ['data-plugin' => 'switchery', 'data-color' => '#81c868']) !!}

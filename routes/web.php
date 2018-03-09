@@ -52,3 +52,13 @@ Route::get('test', function(){
     return response()->json($example);
 });
 
+Route::get('cookie', function(\Illuminate\Http\Request $request){
+
+    if (isset($_COOKIE['duplicate_'.$request->get('network_id')])) {
+        echo 'Cookie for current user with network='.$request->get('network_id').' existed!';
+    } else {
+        setcookie('duplicate_'.$request->get('network_id'), "1", time()+3600);
+        echo 'First time come to site with network_id='.$request->get('network_id');
+    }
+
+});

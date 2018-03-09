@@ -22,7 +22,8 @@ class NetworkClick extends Model
         'callback_time',
         'callback_response',
         'origin',
-        'time'
+        'time',
+        'is_lead'
     ];
 
     public function network()
@@ -50,9 +51,9 @@ class NetworkClick extends Model
                 if ($request->has('conversion')) {
                     $conversion  = $request->get('conversion');
                     if ($conversion == 1) {
-                        $query->whereNotNull('log_callback_url');
+                        $query->where('is_lead', true);
                     } else {
-                        $query->whereNull('log_callback_url');
+                        $query->where('is_lead', false);
                     }
                 }
 
@@ -96,9 +97,9 @@ class NetworkClick extends Model
         if ($request->has('filter_conversion')) {
             $conversion  = $request->get('filter_conversion');
             if ($conversion == 1) {
-                $query->whereNotNull('network_clicks.log_callback_url');
+                $query->where('network_clicks.is_lead', true);
             } else {
-                $query->whereNull('network_clicks.log_callback_url');
+                $query->where('network_clicks.is_lead', false);
             }
         }
 
