@@ -50,7 +50,7 @@
 
                             <div class="form-group m-l-10">
                                 <label class="sr-only" for="">Network</label>
-                                {!! Form::select('network_id', ['' => '--- Chọn Network ---'] + \App\Network::where('is_sms_callback', 2)->pluck('name','id')->all(), null, ['class' => 'form-control']) !!}
+                                {!! Form::select('network_id', ['' => '--- Chọn Network ---'] + \App\Site::getNetworks(2), null, ['class' => 'form-control']) !!}
                             </div>
 
 

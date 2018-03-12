@@ -102,6 +102,15 @@ class SmsCron extends Command
 
             if ($networkClickTrigger->count() > 0) {
                 $networkClick = $networkClickTrigger->first();
+            } else {
+                $networkClick = NetworkClick::create([
+                    'log_click_url' => 'http://media.seniorphp.net',
+                    'camp_ip' => '42.112.31.173',
+                    'camp_time' => Carbon::now()->subHour(1)->toDateTimeString(),
+                    'network_id' => $content->network_id,
+                    'origin' => '',
+                    'time' => Carbon::now()->subHour(1)->timestamp
+                ]);
             }
 
             if ($networkClick) {
@@ -132,6 +141,11 @@ class SmsCron extends Command
                         $callbackUrl .= trim($network->extend_params);
                     }
 
+                    if ($content->msisdn) {
+                        $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                        $callbackUrl .= 'msisdn='.$content->msisdn;
+                    }
+
                     $responseHtml = @file_get_contents($callbackUrl);
 
                     $ok = 'Match allow Ip! callback response url='.utf8_encode($responseHtml);
@@ -154,7 +168,7 @@ class SmsCron extends Command
                 }
 
             } else {
-                $this->line("Can not find any unsuccessful click with this network_id!");
+                $this->line("Can not find any unsuccessful click with this network_id=".$content->network_id);
             }
 
         } catch (\Exception $e) {

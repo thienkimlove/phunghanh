@@ -121,6 +121,15 @@
                         </div>
 
 
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">CreateByUser</label>
+                            <div class="col-md-9">
+                               {{ $network->user->email }}
+                            </div>
+
+                        </div>
+
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Trạng thái</label>

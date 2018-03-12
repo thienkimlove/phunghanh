@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'is_admin'
     ];
 
     /**
@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return true;
+        return $this->is_admin;
     }
 
     public static function getDataTables($request)
@@ -51,7 +51,10 @@ class User extends Authenticatable
                 return '<a class="table-action-btn" title="Chỉnh sửa người dùng" href="' . route('users.edit', $user->id) . '"><i class="fa fa-pencil text-success"></i></a>';
 
             })
-            ->rawColumns(['action', 'email', 'name'])
+            ->editColumn('is_admin', function ($user) {
+                return $user->is_admin ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
+            })
+            ->rawColumns(['action', 'email', 'name', 'is_admin'])
             ->make(true);
     }
 }

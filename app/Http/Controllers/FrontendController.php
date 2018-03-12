@@ -19,88 +19,6 @@ class FrontendController extends Controller
         return view('welcome');
     }
 
-
-    private function processClick($networkId, $networkClickUrl, $networkAuto, $request)
-    {
-        $goAwayUrl = null;
-
-        try {
-            \DB::beginTransaction();
-
-            $networkClick = NetworkClick::create([
-                'log_click_url' => $request->fullUrl(),
-                'camp_ip' => $request->ip(),
-                'camp_time' => Carbon::now()->toDateTimeString(),
-                'network_id' => $networkId,
-                'origin' => $request->server('HTTP_REFERER'),
-                'time' => Carbon::now()->timestamp
-            ]);
-
-            $signUrl = (strpos($networkClickUrl, '?') === FALSE)? '?' : '&';
-            $goAwayUrl = $networkClickUrl.$signUrl.'uid='.$networkClick->id;
-
-            /*$networkClick->update([
-                'redirect_to_end_point_url' => $goAwayUrl
-            ]);*/
-
-            if ($networkAuto) {
-
-                if ($networkClick->id % 10000 == 0) {
-                    //add one click.
-                    Report::create([
-                        'network_id' => $networkId,
-                        'date' => Carbon::now()->toDateString(),
-                        'phone' => uniqid(time()),
-                    ]);
-                }
-            }
-
-            \DB::commit();
-
-        } catch (\Exception $e) {
-            \DB::rollBack();
-        }
-
-        return $goAwayUrl;
-    }
-
-    public function camp(Request $request)
-    {
-        #dd('network Maintaine 1 mins!');
-        $errorMsg = null;
-        if ($request->input('network_id')) {
-            $networkId = $request->input('network_id');
-
-            if (Cache::has('network_id_'.$networkId)) {
-                $networkData = Cache::get('network_id_'.$networkId);
-            } else {
-                $networkData = Network::find($networkId)->toArray();
-                Cache::put('network_id_'.$networkId, $networkData, 10);
-            }
-
-
-            if ($networkData && $networkData['status']) {
-
-                $goAwayUrl = $this->processClick($networkId, $networkData['click_url'], $networkData['auto'], $request);
-                if ($goAwayUrl) {
-                    return redirect()->away($goAwayUrl);
-                }  else {
-                    $errorMsg = 'Failed to insert!';
-                }
-
-            }  else {
-                $errorMsg = 'Failed to process with networkId='.$request->input('network_id');
-            }
-        } else {
-            $errorMsg = 'Network_id is required';
-        }
-
-        if ($errorMsg) {
-            @file_put_contents(storage_path('logs/camp_errors.txt'), $errorMsg."\n", FILE_APPEND);
-            return response()->json(['error' => $errorMsg]);
-        }
-    }
-
     // only for network->is_sms_callback = 0
 
     public function callback(Request $request)
@@ -249,6 +167,15 @@ class FrontendController extends Controller
 
             if ($networkClickTrigger->count() > 0) {
                 $networkClick = $networkClickTrigger->first();
+            } else {
+                $networkClick = NetworkClick::create([
+                    'log_click_url' => 'http://media.seniorphp.net',
+                    'camp_ip' => '42.112.31.173',
+                    'camp_time' => Carbon::now()->subHour(1)->toDateTimeString(),
+                    'network_id' => $networkId,
+                    'origin' => '',
+                    'time' => Carbon::now()->subHour(1)->timestamp
+                ]);
             }
 
             if ($networkClick) {

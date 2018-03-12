@@ -69,7 +69,8 @@
                     <thead>
                     <tr>
                         <th width="45%">Tên người dùng</th>
-                        <th width="35%">Email</th>
+                        <th width="25%">Email</th>
+                        <th width="15%">Is Admin</th>
                         <th width="10%">Ngày tạo</th>
                         <th width="10%"></th>
                     </tr>
@@ -127,6 +128,7 @@
                 columns: [
                     {data: 'name', name: 'name'},
                     {data: 'email', name: 'email'},
+                    {data: 'is_admin', name: 'is_admin'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ],

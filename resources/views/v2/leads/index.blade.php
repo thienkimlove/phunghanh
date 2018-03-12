@@ -45,7 +45,7 @@
 
                             <div class="form-group m-l-10">
                                 <label class="sr-only" for="">Network</label>
-                                {!! Form::select('network_id', \App\Network::pluck('name', 'id')->all(), null, ['class' => 'form-control']) !!}
+                                {!! Form::select('network_id', \App\Site::getNetworks(), null, ['class' => 'form-control']) !!}
                             </div>
 
                             <div class="form-group m-l-10">

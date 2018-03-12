@@ -36,11 +36,24 @@ class Network extends Model
         'auto',
         'redirect_if_duplicate',
         'number_redirect',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 
     public static function getDataTables($request)
     {
-        $network = static::select('*')->orderBy('created_at', 'desc');
+        if (auth()->user()->isAdmin()) {
+            $network = static::select('*')->orderBy('created_at', 'desc');
+        } else {
+            $adminIds = User::where('is_admin', true)->pluck('id')->all();
+            $network = static::select('*')->whereNotIn('user_id', $adminIds)->orderBy('created_at', 'desc');
+        }
+
 
         return DataTables::of($network)
             ->filter(function ($query) use ($request) {
@@ -85,11 +98,15 @@ class Network extends Model
                 return $response;
             })
 
+            ->addColumn('user', function ($network) {
+                return isset($network->user->email) ? $network->user->email : 'None';
+            })
+
             ->addColumn('action', function ($network) {
                 return '<a class="table-action-btn" title="Chỉnh sửa Network" href="' . route('networks.edit', $network->id) . '"><i class="fa fa-pencil text-success"></i></a> <a class="table-action-btn" id="btn-connect-' . $network->id . '" title="Show Connection" data-url="' . route('networks.connect', $network->id) . '" href="javascript:;"><i class="fa fa-terminal text-warning"></i></a>';
 
             })
-            ->rawColumns(['action', 'name', 'status', 'callback', 'auto', 'redirect_if_duplicate'])
+            ->rawColumns(['action', 'name', 'status', 'callback', 'auto', 'redirect_if_duplicate', 'user'])
             ->make(true);
     }
 }

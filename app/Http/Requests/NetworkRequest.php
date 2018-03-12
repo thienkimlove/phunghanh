@@ -66,6 +66,10 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
+        $this->merge([
+            'user_id' => auth()->user()->id,
+        ]);
+
         if ($this->has('connection_id')) {
             $connection = Connection::find($this->get('connection_id'));
             $this->merge([
@@ -104,6 +108,7 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
+
         $network = Network::findOrFail($id);
 
         $network->update($this->all());
@@ -113,6 +118,7 @@ class NetworkRequest extends FormRequest
                 'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
             ]);
         }
+
 
 
         return $this;

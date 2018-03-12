@@ -85,7 +85,8 @@
                         <th width="10%">Tên</th>
                         <th width="20%">ClickUrl</th>
                         <th width="20%">RedirectURL</th>
-                        <th width="20%">Callback</th>
+                        <th width="10%">Callback</th>
+                        <th width="10%">CreateByUser</th>
                         <th width="10%">Auto</th>
                         <th width="10%">Ngày tạo</th>
                         <th width="10%">Trạng thái</th>
@@ -168,6 +169,7 @@
                     {data: 'click_url', name: 'click_url'},
                     {data: 'redirect_if_duplicate', name: 'redirect_if_duplicate'},
                     {data: 'callback', name: 'callback'},
+                    {data: 'user', name: 'user'},
                     {data: 'auto', name: 'auto'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},

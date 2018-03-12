@@ -61,6 +61,11 @@ class ReportRequest extends FormRequest
         $date = $this->get('date');
         $network_id = $this->get('network_id');
         $quantity = $this->get('quantity');
+        $phones = [];
+
+        if ($this->get('phones')) {
+            $phones = explode(',', $this->get('phones'));
+        }
 
         $countByDate = Report::where('date', $date)->where('network_id', $network_id)->count();
 
@@ -71,7 +76,7 @@ class ReportRequest extends FormRequest
                 Report::create([
                     'network_id' => $network_id,
                     'date' => $date,
-                    'phone' => uniqid(time().$i),
+                    'phone' => (isset($phones[$i]) && $phones[$i]) ? $phones[$i] : uniqid(time().$i),
                 ]);
             }
         }

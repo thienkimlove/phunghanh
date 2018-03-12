@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('clear:old')
             ->appendOutputTo(storage_path('logs/clear_old.log'))
             ->withoutOverlapping()
-            ->hourly();
+            ->everyThirtyMinutes();
     }
 
     /**

@@ -88,43 +88,65 @@ class NetworkClick extends Model
     {
         ini_set('memory_limit', '2048M');
 
-        $query = NetworkClick::join('networks', 'network_clicks.network_id', '=', 'networks.id');
-
-        if ($request->has('filter_network_id')) {
-            $query->where('network_clicks.network_id', $request->get('filter_network_id'));
-        }
-
-        if ($request->has('filter_conversion')) {
-            $conversion  = $request->get('filter_conversion');
-            if ($conversion == 1) {
-                $query->where('network_clicks.is_lead', true);
-            } else {
-                $query->where('network_clicks.is_lead', false);
-            }
-        }
-
-        if ($request->filled('filter_date')) {
-            $dateRange = explode(' - ', $request->get('filter_date'));
-            $query->whereDate('network_clicks.created_at', '>=', Carbon::createFromFormat('d/m/Y', $dateRange[0])->toDateString());
-            $query->whereDate('network_clicks.created_at', '<=', Carbon::createFromFormat('d/m/Y', $dateRange[1])->toDateString());
-        }
+        $query = NetworkClick::join('networks', 'network_clicks.network_id', '=', 'networks.id')
+            ->where('network_clicks.is_lead', true);
 
 
-        $reports = $query->selectRaw("networks.name as network_name, network_clicks.camp_ip as network_click_ip")->get();
+        $dateRange = explode(' - ', $request->get('filter_date'));
+        $startDate = Carbon::createFromFormat('d/m/Y', $dateRange[0])->toDateString();
+        $endDate = Carbon::createFromFormat('d/m/Y', $dateRange[1])->toDateString();
+        $query = $query->whereDate('network_clicks.created_at', '>=', $startDate);
+        $query = $query->whereDate('network_clicks.created_at', '<=', $endDate);
 
-        return (new static())->createExcellFile($reports);
+
+        $reports = $query->selectRaw("COUNT(network_clicks.id) as total, networks.id as network_id, networks.name as network_name, networks.click_url as click_url,  networks.callback_url as network_callback_url")
+            ->groupBy('networks.id')
+            ->get();
+
+        return (new static())->createExcellFile($reports, $startDate, $endDate);
     }
 
-    public function createExcellFile($reports)
+    private function get_domain($url)
+    {
+        $sourceUrl = parse_url($url);
+        return $sourceUrl['host'];
+    }
+
+    public function createExcellFile($reports,  $startDate, $endDate)
     {
         $objReader = \PHPExcel_IOFactory::createReader('Excel2007');
         $objPHPExcel = $objReader->load(resource_path('templates/results.xlsx'));
 
         $row = 2;
         foreach ($reports as $report) {
-            $objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $row - 1)
+
+
+
+            $totalClicks = TotalClick::where('network_id', $report->network_id)->get();
+
+            if ($totalClicks->count() > 0) {
+                $totalClicks = $totalClicks->first()->total;
+            } else {
+                $totalClicks = 0;
+            }
+
+            $connection = Connection::where('callback', $report->network_callback_url)->get();
+
+            if ($connection->count() > 0) {
+                $connectionName = $connection->first()->name;
+            } else {
+                $connectionName = 'N/A';
+            }
+
+            $objPHPExcel->getActiveSheet()
+                ->setCellValue('A'.$row, $report->network_id)
                 ->setCellValue('B'.$row, $report->network_name)
-                ->setCellValue('C'.$row, $report->network_click_ip);
+                ->setCellValue('C'.$row, $this->get_domain($report->click_url))
+                ->setCellValue('D'.$row, $connectionName)
+                ->setCellValue('E'.$row, $totalClicks)
+                ->setCellValue('F'.$row, $report->total)
+                ->setCellValue('G'.$row, $startDate)
+                ->setCellValue('H'.$row, $endDate);
 
             $row++;
         }

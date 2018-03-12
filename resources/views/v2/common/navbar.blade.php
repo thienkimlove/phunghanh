@@ -28,7 +28,9 @@
                 <li class="has-submenu">
                     <a href="#"><i class="md md-class"></i>Hệ thống</a>
                     <ul class="submenu">
-                        <li><a href="{{ url('/users')}}">User</a></li>
+                        @if (auth()->user()->isAdmin())
+                            <li><a href="{{ url('/users')}}">User</a></li>
+                        @endif
                         <li><a href="{{ url('/networks')}}">Network</a></li>
                         <li><a href="{{ url('/connections')}}">Connection</a></li>
                     </ul>

@@ -40,6 +40,9 @@ class UsersController extends Controller
         }
         $data = $request->all();
         $data['password'] =  Hash::make(time());
+        if (!$request->get('is_admin')) {
+            $data['is_admin'] = false;
+        }
         $modelClass = $this->init();
         $modelClass::create($data);
         flash()->success('Success','Success created!');
@@ -62,8 +65,11 @@ class UsersController extends Controller
         }
         $modelClass = $this->init();
         $content = $modelClass::find($id);
-
-        $content->update($request->all());
+        $data = $request->all();
+        if (!$request->get('is_admin')) {
+            $data['is_admin'] = false;
+        }
+        $content->update($data);
         flash()->success('Success','Success edited!');
         return redirect($this->model);
     }

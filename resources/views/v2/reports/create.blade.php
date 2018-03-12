@@ -37,10 +37,20 @@
                         {!! Form::open(['route' => ['reports.store'], 'method' => 'post', 'role' => 'form', 'class' => 'form-horizontal']) !!}
                         @include('v2.layouts.partials.errors')
 
+
+
                         <div class="form-group">
                             <label class="col-md-3 control-label">Date</label>
                             <div class="col-md-9">
                                 {!! Form::text('date', \Carbon\Carbon::now()->toDateString(), ['class' => 'form-control', 'id' => 'start-network-date']) !!}
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Network</label>
+                            <div class="col-md-9">
+                                {!! Form::select('network_id', ['' => '=== Chọn Network ===']  + \App\Site::getNetworks(2, true), null, ['class' => 'form-control select2']) !!}
                             </div>
                         </div>
 
@@ -52,20 +62,21 @@
                             </div>
                         </div>
 
-
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Network</label>
-                            <div class="col-md-9">
-                                {!! Form::select('network_id', ['' => '=== Chọn Network ===']  + \App\Site::getManualNetworks(), null, ['class' => 'form-control select2']) !!}
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             <label class="col-sm-3 control-label no-padding-right"></label>
                             <div class="col-sm-9">
                                 <button type="submit" class="btn btn-success waves-effect waves-light">Lưu</button>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">List Of Phones (phone1, phone2)</label>
+                            <div class="col-md-9">
+                                {!! Form::textarea('phones', null, ['id' => 'phones', 'class' => 'form-control', 'placeholder' => 'Phones']) !!}
+                            </div>
+                        </div>
+
+
                         {!! Form::close() !!}
                     </div>
                 </div>
