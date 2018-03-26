@@ -66,6 +66,12 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
+        if (!$this->has('number_redirect')) {
+            $this->merge([
+                'number_redirect' => 1,
+            ]);
+        }
+
         $this->merge([
             'user_id' => auth()->user()->id,
         ]);
@@ -105,6 +111,12 @@ class NetworkRequest extends FormRequest
         if (!$this->has('status')) {
             $this->merge([
                 'status' => false,
+            ]);
+        }
+
+        if (!$this->has('number_redirect')) {
+            $this->merge([
+                'number_redirect' => 1,
             ]);
         }
 

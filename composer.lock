@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a738e171ed64ae991a4e06b7c8f59c2b",
-    "content-hash": "56580a2877b808f17c188b65a932baaa",
+    "hash": "4c59b4e62005263f38fd4cb25cc45dbf",
+    "content-hash": "ad4baa164ef76b21014a0e7cc6e8a563",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1279,20 +1279,19 @@
         },
         {
             "name": "jenssegers/agent",
-            "version": "v2.5.2",
+            "version": "v2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/agent.git",
-                "reference": "faf85b10206478382ac93eda122430fee78c544e"
+                "reference": "df71082ed2a95fc8a82ba30832ccf72df939f02a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jenssegers/agent/zipball/faf85b10206478382ac93eda122430fee78c544e",
-                "reference": "faf85b10206478382ac93eda122430fee78c544e",
+                "url": "https://api.github.com/repos/jenssegers/agent/zipball/df71082ed2a95fc8a82ba30832ccf72df939f02a",
+                "reference": "df71082ed2a95fc8a82ba30832ccf72df939f02a",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^4.0|^5.0",
                 "jaybizzle/crawler-detect": "^1.2",
                 "mobiledetect/mobiledetectlib": "^2.7.6",
                 "php": ">=5.4.0"
@@ -1342,7 +1341,7 @@
                 "user agent",
                 "useragent"
             ],
-            "time": "2017-06-27 06:30:13"
+            "time": "2017-11-10 10:35:35"
         },
         {
             "name": "jeremeamia/SuperClosure",

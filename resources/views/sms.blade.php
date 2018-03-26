@@ -6,21 +6,19 @@
             integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
             crossorigin="anonymous"></script>
 </head>
-<body bgcolor=white>
+<body style="display: none" bgcolor=white>
 
 <table border="0" cellpadding="10">
     <tr>
+
         <td>
-            <img src="images/springsource.png">
-        </td>
-        <td>
-            <h1><a id="loading" href="sms:/19001280/&body=DK TEST">Link</a></h1>
+            <h1><a id="loading" href="sms:/7892/&body=DK">Link</a></h1>
         </td>
     </tr>
 </table>
 <script>
     $(function () {
-        location.href = "sms:/19001280/&body=DK TEST";
+        location.href = "sms:/7892/&body=DK";
     })
 </script>
 </body>

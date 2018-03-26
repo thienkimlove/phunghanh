@@ -186,6 +186,7 @@ return [
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         Gtk\FlashMessage\FlashMessageServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
 
     ],
 
@@ -242,6 +243,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class, 
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ],
 
 ];

@@ -1,4 +1,5 @@
 <?php
+use Jenssegers\Agent\Agent;
 
 #Admin Routes
 Route::get('login', 'AdminController@redirectToGoogle')->name('login');
@@ -39,10 +40,22 @@ Route::get('excallback', 'FrontendController@exampleCallback');
 Route::get('api/source/{uid}', 'FrontendController@source');
 Route::get('report', 'FrontendController@report');
 Route::get('smscallback', 'FrontendController@smsCallback');
-Route::get('sms', function(){
+Route::get('sms', function(\Illuminate\Http\Request $request){
 
-    return view('sms');
-   // return redirect("sms:/**/&body=/* body text here */");
+    //return view('sms');
+    #return redirect()->away("//sms:/7892/&body=DK");
+
+    $number = $request->has('num') ? $request->get('num') : 7892;
+    $text = $request->has('text') ? urldecode($request->get('text')) : 'DK';
+
+    $agent = new Agent();
+
+    if ($agent->isAndroidOS()) {
+        header('Location: sms:'.$number.'?body='.$text);
+    } elseif ($agent->isiOS()) {
+        header('Location: sms:/'.$number.'/&body='.$text);
+    }
+
 });
 
 Route::get('test', function(){
