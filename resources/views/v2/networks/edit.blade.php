@@ -43,12 +43,42 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Click Url</label>
-                            <div class="col-md-9">
-                                {!! Form::text('click_url', $network->click_url, ['id' => 'click_url', 'class' => 'form-control', 'placeholder' => 'Click Url', 'required' => 'required']) !!}
+
+                        @php
+                          $url_data = \App\Site::getNetworkLinks($network);
+                        @endphp
+
+                        @for ($i = 0; $i < 3; $i++)
+
+                            <div class="card-box">
+                                <h4>Link {{$i + 1}}</h4>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Click Url</label>
+                                    <div class="col-md-9">
+                                        {!! Form::text('click_url[]', isset($url_data[$i]) ? $url_data[$i]['click_url'] : null , ['class' => 'form-control', 'placeholder' => 'Click Url']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Allow IPs</label>
+                                    <div class="col-md-9">
+                                        {!! Form::textarea('allow_ip[]', isset($url_data[$i]) ? $url_data[$i]['allow_ip'] : null, ['class' => 'form-control', 'placeholder' => 'Allow Ips']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Số Click tối đa/Phút</label>
+                                    <div class="col-md-9">
+                                        {!! Form::text('number_click_per_minute[]', isset($url_data[$i]) ? $url_data[$i]['number_click_per_minute'] : 0, ['class' => 'form-control', 'placeholder' => 'Click/Phút']) !!}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+
+                        @endfor
+
+
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Map Params</label>

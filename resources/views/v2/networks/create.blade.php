@@ -43,12 +43,37 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Click Url</label>
-                            <div class="col-md-9">
-                                {!! Form::text('click_url', null, ['id' => 'click_url', 'class' => 'form-control', 'placeholder' => 'Click Url', 'required' => 'required']) !!}
+
+                        @for ($i = 0; $i < 3; $i++)
+
+                        <div class="card-box">
+                            <h4>Link {{$i + 1}}</h4>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Click Url</label>
+                                <div class="col-md-9">
+                                    {!! Form::text('click_url[]', null, ['class' => 'form-control', 'placeholder' => 'Click Url']) !!}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Allow IPs</label>
+                                <div class="col-md-9">
+                                    {!! Form::textarea('allow_ip[]', null, ['class' => 'form-control', 'placeholder' => 'Allow Ips']) !!}
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">Số Click tối đa/Phút</label>
+                                <div class="col-md-9">
+                                    {!! Form::text('number_click_per_minute[]', null, ['class' => 'form-control', 'placeholder' => 'Click/Phút']) !!}
+                                </div>
                             </div>
                         </div>
+
+                        @endfor
+
+
 
                         <div class="card-box">
                             <h4>Connection</h4>

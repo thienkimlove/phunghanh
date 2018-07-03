@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Connection;
 use App\Network;
+use App\Site;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NetworkRequest extends FormRequest
@@ -84,17 +85,39 @@ class NetworkRequest extends FormRequest
                 'extend_params' => $connection->extend_params,
                 'callback_allow_ip' => '',
             ]);
+        }
 
-            $network = Network::create($this->all());
+        if ($this->has('click_url')) {
+            $generate_json = [];
+            for ($i = 0; $i < 3; $i++) {
+                $temp = [
+                    'click_url' => isset($this->get('click_url')[$i]) ? $this->get('click_url')[$i] : null,
+                    'allow_ip' => isset($this->get('allow_ip')[$i]) ? $this->get('allow_ip')[$i] : null,
+                    'number_click_per_minute' => isset($this->get('number_click_per_minute')[$i]) ? $this->get('number_click_per_minute')[$i] : null,
+                ];
 
-            if ($network->is_sms_callback == 2) {
-                $network->update([
-                    'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
-                ]);
+                $generate_json[] = $temp;
             }
 
-            return $this;
+            $click_data = json_encode($generate_json, true);
+
+            $this->merge([
+                'click_url' => $click_data
+            ]);
         }
+
+
+        $network = Network::create($this->all());
+
+        if ($network->is_sms_callback == 2) {
+            $network->update([
+                'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
+            ]);
+        }
+
+        Site::fillLinkIdToNetwork($network);
+
+        return $this;
 
 
     }
@@ -120,6 +143,25 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
+        if ($this->has('click_url')) {
+            $generate_json = [];
+            for ($i = 0; $i < 3; $i++) {
+                $temp = [
+                    'click_url' => isset($this->get('click_url')[$i]) ? $this->get('click_url')[$i] : null,
+                    'allow_ip' => isset($this->get('allow_ip')[$i]) ? $this->get('allow_ip')[$i] : null,
+                    'number_click_per_minute' => isset($this->get('number_click_per_minute')[$i]) ? $this->get('number_click_per_minute')[$i] : null,
+                ];
+
+                $generate_json[] = $temp;
+            }
+
+            $click_data = json_encode($generate_json, true);
+
+            $this->merge([
+                'click_url' => $click_data
+            ]);
+        }
+
 
         $network = Network::findOrFail($id);
 
@@ -130,6 +172,8 @@ class NetworkRequest extends FormRequest
                 'cron_url' => 'http://media.seniorphp.net/report?network_id='.$network->id.'&start=#START&end=#END'
             ]);
         }
+
+        Site::fillLinkIdToNetwork($network);
 
 
 

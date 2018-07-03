@@ -108,8 +108,19 @@ class NetworkClick extends Model
 
     private function get_domain($url)
     {
-        $sourceUrl = parse_url($url);
-        return $sourceUrl['host'];
+        $res = null;
+
+        $url_data = json_decode($url, true);
+        foreach ($url_data as $data) {
+            if ($data['click_url']) {
+                $sourceUrl = parse_url($data['click_url']);
+                $res .= $sourceUrl['host'].',';
+            }
+
+        }
+
+        return $res;
+
     }
 
     public function createExcellFile($reports,  $startDate, $endDate)

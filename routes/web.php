@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth.backend'], function() {
     Route::resource('reports', 'ReportsController');
     Route::get('reports.dataTables', ['uses' => 'ReportsController@dataTables', 'as' => 'reports.dataTables']);
 
+    Route::resource('traffics', 'TrafficsController');
+    Route::get('traffics.dataTables', ['uses' => 'TrafficsController@dataTables', 'as' => 'traffics.dataTables']);
+
     Route::resource('connections', 'ConnectionsController');
     Route::get('connections.dataTables', ['uses' => 'ConnectionsController@dataTables', 'as' => 'connections.dataTables']);
 });

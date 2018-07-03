@@ -56,4 +56,10 @@ class NetworksController extends Controller
         return Network::getDataTables($request);
     }
 
+    public function destroy($id) {
+        Network::find($id)->delete();
+        flash()->success('Success', 'Network đã xóa thành công!');
+        return response()->json(['status' => true]);
+    }
+
 }

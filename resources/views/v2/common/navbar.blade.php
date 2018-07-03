@@ -22,6 +22,11 @@
                     <a href="{{ url('/reports')}}"><i class="md md-album"></i>Sản lượng nhập tay</a>
                 </li>
 
+                <li class="has-submenu">
+                    <a href="{{ url('/traffics')}}"><i class="md md-color-lens"></i>Lưu lượng</a>
+                </li>
+
+
 
             @if ($currentUser->isAdmin())
 

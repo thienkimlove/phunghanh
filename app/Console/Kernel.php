@@ -3,7 +3,9 @@
 namespace App\Console;
 
 use App\Console\Commands\AddAdmin;
+use App\Console\Commands\ChangeClick;
 use App\Console\Commands\ClearOld;
+use App\Console\Commands\ClearTraffic;
 use App\Console\Commands\SmsCron;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -19,6 +21,8 @@ class Kernel extends ConsoleKernel
         AddAdmin::class,
         SmsCron::class,
         ClearOld::class,
+        ChangeClick::class,
+        ClearTraffic::class,
     ];
 
     /**
@@ -41,6 +45,11 @@ class Kernel extends ConsoleKernel
             ->appendOutputTo(storage_path('logs/clear_old.log'))
             ->withoutOverlapping()
             ->everyThirtyMinutes();
+
+        $schedule->command('clear:traffic')
+            ->appendOutputTo(storage_path('logs/clear_traffic.log'))
+            ->withoutOverlapping()
+            ->hourly();
     }
 
     /**

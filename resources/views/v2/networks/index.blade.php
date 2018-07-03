@@ -204,6 +204,34 @@
                     });
                 });
             });
+
+            datatable.on('click', '[id^="btn-delete-"]', function (e) {
+                e.preventDefault();
+
+                var url = $(this).data('url');
+
+                swal({
+                    title: "Bạn có muốn xóa network này?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Accept!"
+                }).then(function () {
+                    $.ajax({
+                        url : url,
+                        type : 'DELETE',
+                        beforeSend: function (xhr) {
+                            var token = $('meta[name="csrf_token"]').attr('content');
+                            if (token) {
+                                return xhr.setRequestHeader('X-CSRF-TOKEN', token);
+                            }
+                        }
+                    }).always(function (data) {
+                        datatable.draw();
+                    });
+                });
+            });
         });
 
         $.ajaxSetup({

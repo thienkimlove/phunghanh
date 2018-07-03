@@ -10,8 +10,6 @@ use App\Report;
 use Carbon\Carbon;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Jenssegers\Agent\Agent;
 
 class FrontendController extends Controller
 {
