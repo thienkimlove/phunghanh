@@ -70,6 +70,12 @@
                     {!! Form::select('auto', array( 0 => 'Inactive', 1 => 'Active'), null, ['class' => 'form-control']) !!}
                 </div>
 
+
+                <div class="form-group">
+                    {!! Form::label('must_set_header', 'Must Set Header') !!}
+                    {!! Form::select('must_set_header', array(1 => 'Yes', 0 => 'No'), null, ['class' => 'form-control']) !!}
+                </div>
+
             <div class="form-group">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary form-control']) !!}
             </div>

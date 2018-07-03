@@ -37,6 +37,7 @@ class Network extends Model
         'redirect_if_duplicate',
         'number_redirect',
         'user_id',
+        'must_set_header',
     ];
 
     public function user()
@@ -78,6 +79,10 @@ class Network extends Model
             ->editColumn('status', function ($network) {
                 return $network->status ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
             })
+
+            ->editColumn('must_set_header', function ($network) {
+                return $network->must_set_header ? '<i class="ion ion-checkmark-circled text-success"></i>' : '<i class="ion ion-close-circled text-danger"></i>';
+            })
             ->editColumn('click_url', function ($network) {
                 $clicks = json_decode($network->click_url, true);
                 $response = '';
@@ -118,7 +123,7 @@ class Network extends Model
                 return '<a class="table-action-btn" title="Chỉnh sửa Network" href="' . route('networks.edit', $network->id) . '"><i class="fa fa-pencil text-success"></i></a> <a class="table-action-btn" id="btn-connect-' . $network->id . '" title="Show Connection" data-url="' . route('networks.connect', $network->id) . '" href="javascript:;"><i class="fa fa-terminal text-warning"></i></a> <a class="table-action-btn" id="btn-delete-'.$network->id.'" title="Remove networks" data-url="' . route('networks.destroy', $network->id) . '"><i class="fa fa-remove text-danger"></i></a>';
 
             })
-            ->rawColumns(['action', 'name', 'status', 'callback', 'auto', 'redirect_if_duplicate', 'user', 'click_url'])
+            ->rawColumns(['action', 'name', 'status', 'callback', 'auto', 'redirect_if_duplicate', 'user', 'click_url', 'must_set_header'])
             ->make(true);
     }
 }

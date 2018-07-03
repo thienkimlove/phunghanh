@@ -18,6 +18,13 @@ class FrontendController extends Controller
         return view('welcome');
     }
 
+    public function landing(Request $request)
+    {
+        $num =  $request->input('num');
+        $text =  $request->input('text');
+        return view('landing.landing', compact('num', 'text'));
+    }
+
     // only for network->is_sms_callback = 0
 
     public function callback(Request $request)

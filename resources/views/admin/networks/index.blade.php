@@ -38,6 +38,7 @@
                                 <th>Link Give to Click Partner</th>
                                 <th>Link Give to Callback Partner</th>
                                 <th>Is SMS Callback</th>
+                                <th>Must Set Header</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -124,6 +125,7 @@
                                     </td>
 
                                     <td>{{$content->is_sms_callback ? 'Using' : 'Not Use'}}</td>
+                                    <td>{{$content->must_set_header ? 'Yes' : 'No'}}</td>
                                     <td>{{$content->status ? 'Active' : 'Inactive'}}</td>
 
                                     <td>

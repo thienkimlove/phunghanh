@@ -67,6 +67,12 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
+        if (!$this->has('must_set_header')) {
+            $this->merge([
+                'must_set_header' => false,
+            ]);
+        }
+
         if (!$this->has('number_redirect')) {
             $this->merge([
                 'number_redirect' => 1,
@@ -134,6 +140,12 @@ class NetworkRequest extends FormRequest
         if (!$this->has('status')) {
             $this->merge([
                 'status' => false,
+            ]);
+        }
+
+        if (!$this->has('must_set_header')) {
+            $this->merge([
+                'must_set_header' => false,
             ]);
         }
 

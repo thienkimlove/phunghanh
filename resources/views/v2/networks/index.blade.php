@@ -88,6 +88,7 @@
                         <th width="10%">Callback</th>
                         <th width="10%">CreateByUser</th>
                         <th width="10%">Auto</th>
+                        <th width="10%">MustSet</th>
                         <th width="10%">Ngày tạo</th>
                         <th width="10%">Trạng thái</th>
                         <th width="10%"></th>
@@ -171,6 +172,7 @@
                     {data: 'callback', name: 'callback'},
                     {data: 'user', name: 'user'},
                     {data: 'auto', name: 'auto'},
+                    {data: 'must_set_header', name: 'must_set_header'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},
                     {data: 'action', name: 'action', orderable: false, searchable: false}

@@ -61,12 +61,7 @@ Route::get('sms', function(\Illuminate\Http\Request $request){
 
 });
 
-Route::get('test', function(){
-
-    $example = json_decode(file_get_contents('http://v.fatv.vn/partner/subs?start=2017-11-08&end=2017-11-08'), true);
-
-    return response()->json($example);
-});
+Route::get('come', 'FrontendController@landing');
 
 Route::get('cookie', function(\Illuminate\Http\Request $request){
 
@@ -76,5 +71,15 @@ Route::get('cookie', function(\Illuminate\Http\Request $request){
         setcookie('duplicate_'.$request->get('network_id'), "1", time()+3600);
         echo 'First time come to site with network_id='.$request->get('network_id');
     }
+
+});
+
+Route::get('show_header',  function(\Illuminate\Http\Request $request){
+
+   echo "Header";
+
+   echo "<pre>";
+
+   print_r($request->headers->all());
 
 });

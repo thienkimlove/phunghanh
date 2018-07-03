@@ -160,6 +160,15 @@
                         </div>
 
 
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Must Set Header</label>
+                            <div class="col-md-9">
+                                {!! Form::checkbox('must_set_header', '1', $network->must_set_header, ['data-plugin' => 'switchery', 'data-color' => '#81c868']) !!}
+                                <span class="lbl"></span>
+                            </div>
+                        </div>
+
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Trạng thái</label>
