@@ -104,6 +104,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Number of Clicks For Each Auto Conversion</label>
+                            <div class="col-md-9">
+                                {!! Form::number('number_click_to_add_conversion', null, ['id' => 'number_click_to_add_conversion', 'class' => 'form-control', 'placeholder' => 'Number of Clicks For Each Auto Conversion']) !!}
+                            </div>
+                        </div>
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">URL Redirect If Duplicate</label>
@@ -111,6 +118,8 @@
                                 {!! Form::text('redirect_if_duplicate', null, ['id' => 'redirect_if_duplicate', 'class' => 'form-control', 'placeholder' => 'URL Redirect']) !!}
                             </div>
                         </div>
+
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">Number of Time Redirect</label>

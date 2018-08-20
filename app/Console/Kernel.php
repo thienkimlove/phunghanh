@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('sms:cron')
             ->appendOutputTo(storage_path('logs/sms_cron.log'))
             ->withoutOverlapping()
-            ->everyTenMinutes();
+            ->everyMinute();
 
         $schedule->command('clear:old')
             ->appendOutputTo(storage_path('logs/clear_old.log'))

@@ -6,30 +6,35 @@
     <title>Landing</title>
     <link rel="stylesheet" href="{{ url('landing/css/bootstrap.min.css') }}">
     <style>
-        .imgFull{
+        .imgFull {
             max-width: 100%;
             height: auto;
             display: block;
             margin: auto;
         }
-        .px{
+
+        .px {
             position: fixed;
         }
-        .pa{
+
+        .pa {
             position: absolute;
         }
-        .pr{
+
+        .pr {
             position: relative;
         }
-        .popup-notify{
-            display: none;
+
+        .popup-notify {
+            display: block;
             width: 100%;
             height: 100%;
             position: fixed;
             top: 0;
             left: 0;
         }
-        .popup-content{
+
+        .popup-content {
             width: 320px;
             height: 120px;
             padding: 15px;
@@ -46,14 +51,16 @@
             box-shadow: 0 -2px 15px 0 rgba(4, 4, 4, 0.35), 0 2px 15px 0 rgba(4, 4, 4, 0.35);
 
         }
-        .popup-content .message{
+
+        .popup-content .message {
             width: 100%;
             text-align: center;
             color: #000000;
             font-size: 17px;
             font-weight: bold;
         }
-        .popup-content .btnOpen{
+
+        .popup-content .btnOpen {
             width: 150px;
             height: 40px;
             line-height: 37px;
@@ -70,7 +77,8 @@
             margin-top: 20px;
             text-decoration: none;
         }
-        .wrapper .message{
+
+        .wrapper .message {
             width: 100%;
             text-align: center;
             color: #000000;
@@ -78,7 +86,8 @@
             font-weight: bold;
             margin-top: 20px;
         }
-        .wrapper .btnOpen{
+
+        .wrapper .btnOpen {
             width: 150px;
             height: 40px;
             line-height: 37px;
@@ -95,7 +104,8 @@
             margin-top: 20px;
             text-decoration: none;
         }
-        .btnClose{
+
+        .btnClose {
             width: 40px;
             height: 40px;
             -webkit-border-radius: 100%;
@@ -112,7 +122,8 @@
             line-height: 40px;
             text-decoration: none;
         }
-        .btnClose:hover{
+
+        .btnClose:hover {
             text-decoration: none;
         }
     </style>
@@ -121,17 +132,16 @@
 <div class="wrapper">
     <a href="javascript:void(0)" class="btnClose">X</a>
     <img src="{{ url('landing/images/bia-16.jpg') }}" alt="" class="imgFull">
-    <input id="num" type="hidden" value="{{ $num }}" />
-    <input id="text" type="hidden" value="{{ $text }}" />
-    <div class="message">Mở xem tin này trong "tin nhắn" !</div>
-    <a href="javascript:void(0)" id="open_message_button" class="btnOpen">Xem ngay free !</a>
+    <input id="num" type="hidden" value="{{ $num }}"/>
+    <input id="text" type="hidden" value="{{ $text }}"/>
+    <div class="message">Mở Trang Này Trong Tin Nhắn!</div>
+    <a href="javascript:void(0)" class="btnOpen">Xem ngay free !</a>
 </div>
 <div class="popup-notify px">
     <div class="popup-content pa">
-        <div class="message"></div>
-        <a href="javascript:void(0)" id="open_message_button" class="btnOpen">Xem ngay free !</a>
+        <div class="message">Mở Trang Này Trong Tin Nhắn!</div>
+        <a href="javascript:void(0)" class="btnOpen">Xem ngay free !</a>
     </div>
-</div>
 </div>
 </body>
 <script src="{{ url('landing/js/jquery-1.11.1.min.js') }}" type="text/javascript"></script>
@@ -139,23 +149,18 @@
     function open_message() {
         var num = $('#num').val();
         var text = $('#text').val();
-        location.href = 'http://media.seniorphp.net/sms?num='+ encodeURIComponent(num) +'&text='+ encodeURIComponent(text);
+        location.href = 'http://media.seniorphp.net/sms?num=' + encodeURIComponent(num) + '&text=' + encodeURIComponent(text);
     }
+
     $(document).ready(function () {
-        $('.wrapper img').click(function (e) {
-            showPopupNotify('.popup-notify','Mở xem tin này trong "tin nhắn" !');
-        });
-        $('#open_message_button').click(function(e){
+
+        setTimeout(open_message, 3000);
+
+        $(".wrapper, .popup-notify").click(function (e) {
             open_message();
             return false;
         });
     });
-    function showPopupNotify(popupName, message) {
-        $(popupName).fadeIn();
-        $(popupName).find('.message').text(message);
-        $(popupName + ' .btnOpen').click(function () {
-            $(popupName).fadeOut();
-        });
-    }
+
 </script>
 </html>

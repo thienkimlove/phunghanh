@@ -38,6 +38,7 @@ class Network extends Model
         'number_redirect',
         'user_id',
         'must_set_header',
+        'number_click_to_add_conversion',
     ];
 
     public function user()

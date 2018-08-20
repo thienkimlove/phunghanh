@@ -135,6 +135,13 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Number of Clicks For Each Auto Conversion</label>
+                            <div class="col-md-9">
+                                {!! Form::number('number_click_to_add_conversion', $network->number_click_to_add_conversion, ['id' => 'number_click_to_add_conversion', 'class' => 'form-control', 'placeholder' => 'Number of Clicks For Each Auto Conversion']) !!}
+                            </div>
+                        </div>
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">URL Redirect If Duplicate</label>

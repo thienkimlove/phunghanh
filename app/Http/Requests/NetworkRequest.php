@@ -79,6 +79,12 @@ class NetworkRequest extends FormRequest
             ]);
         }
 
+        if (!$this->has('number_click_to_add_conversion')) {
+            $this->merge([
+                'number_click_to_add_conversion' => 10000,
+            ]);
+        }
+
         $this->merge([
             'user_id' => auth()->user()->id,
         ]);
@@ -152,6 +158,12 @@ class NetworkRequest extends FormRequest
         if (!$this->has('number_redirect')) {
             $this->merge([
                 'number_redirect' => 1,
+            ]);
+        }
+
+        if (!$this->has('number_click_to_add_conversion')) {
+            $this->merge([
+                'number_click_to_add_conversion' => 10000,
             ]);
         }
 
