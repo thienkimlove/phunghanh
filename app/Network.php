@@ -88,9 +88,11 @@ class Network extends Model
                 $clicks = json_decode($network->click_url, true);
                 $response = '';
                 foreach ($clicks as $k => $click) {
-                    $response .= '<div style="border: 1px solid"><h5>Link '.$k.'</h5><span>';
+                    $response .= '<div><h5>Link '.$k.'</h5><span>';
                     foreach ($click as $key => $value) {
-                        $response .= '<b>'.$key.' : </b>'.$value.'<br/>';
+                        if ($value) {
+                            $response .= '<b>'.$key.' : </b>'.$value.'<br/>';
+                        }
                     }
                     $response .= '</span></div>';
                 }

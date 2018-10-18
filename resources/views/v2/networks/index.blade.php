@@ -81,17 +81,14 @@
                 <table id="dataTables-networks" class="table table-striped table-bordered table-actions-bar">
                     <thead>
                     <tr>
-                        <th width="10%">ID</th>
-                        <th width="10%">Tên</th>
-                        <th width="20%">ClickUrl</th>
-                        <th width="20%">RedirectURL</th>
-                        <th width="10%">Callback</th>
-                        <th width="10%">CreateByUser</th>
-                        <th width="10%">Auto</th>
-                        <th width="10%">NumberClicksForEachAutoConversion</th>
-                        <th width="10%">Ngày tạo</th>
-                        <th width="10%">Trạng thái</th>
-                        <th width="10%"></th>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>ClickUrl</th>
+                        <th>Auto</th>
+                        <th>ClickConvert</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th></th>
                     </tr>
                     </thead>
                 </table>
@@ -168,9 +165,6 @@
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
                     {data: 'click_url', name: 'click_url'},
-                    {data: 'redirect_if_duplicate', name: 'redirect_if_duplicate'},
-                    {data: 'callback', name: 'callback'},
-                    {data: 'user', name: 'user'},
                     {data: 'auto', name: 'auto'},
                     {data: 'number_click_to_add_conversion', name: 'number_click_to_add_conversion'},
                     {data: 'created_at', name: 'created_at'},

@@ -132,8 +132,14 @@ class SmsCron extends Command
                         $from_param = trim($tempCouple[0]);
                         $to_param = trim($tempCouple[1]);
                         if (isset($clickParams[$from_param]) && $clickParams[$from_param]) {
-                            $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                            $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+
+                            if (strpos($callbackUrl, '{'.$to_param.'}') !== FALSE) {
+                                $callbackUrl = str_replace('{'.$to_param.'}', $clickParams[$from_param], $callbackUrl);
+                            } else {
+                                $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                                $callbackUrl .= $to_param.'='.$clickParams[$from_param];
+                            }
+
                         }
                     }
                     if ($network->extend_params) {
@@ -142,8 +148,8 @@ class SmsCron extends Command
                     }
 
                     if ($content->msisdn) {
-                        $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
-                        $callbackUrl .= 'msisdn='.$content->msisdn;
+                       // $callbackUrl .= (strpos($callbackUrl, '?') === FALSE)? '?' : '&';
+                        $callbackUrl .= '&msisdn='.$content->msisdn;
                     }
 
                     $responseHtml = @file_get_contents($callbackUrl);
